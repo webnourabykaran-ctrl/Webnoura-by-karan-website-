@@ -19,7 +19,6 @@ export const WEBSITE_TYPES = [
   "Gym website",
   "Portfolio website",
   "Landing page",
-  "E-commerce website",
   "Other",
 ] as const;
 
