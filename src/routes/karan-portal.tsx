@@ -16,6 +16,7 @@ import { PortfolioTab } from "@/components/admin/tabs/PortfolioTab";
 import { ServicesTab } from "@/components/admin/tabs/ServicesTab";
 import { SettingsTab } from "@/components/admin/tabs/SettingsTab";
 import { InvoicesTab } from "@/components/admin/tabs/InvoicesTab";
+import { AdminLanguageProvider, useAdminLanguage } from "@/lib/adminLanguage";
 import { AddLeadModal } from "@/components/admin/AddLeadModal";
 import {
   AdminEnquiry,
@@ -37,10 +38,19 @@ export const Route = createFileRoute("/karan-portal")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: AdminPage,
+  component: AdminPageWrapper,
 });
 
+function AdminPageWrapper() {
+  return (
+    <AdminLanguageProvider>
+      <AdminPage />
+    </AdminLanguageProvider>
+  );
+}
+
 function AdminPage() {
+  const { language, t } = useAdminLanguage();
   const [mounted, setMounted] = useState(false);
   const [authed, setAuthed] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
@@ -123,17 +133,17 @@ function AdminPage() {
   const unreadCount = enquiries.filter((e) => e.status === "new").length;
 
   const tabTitles: Record<AdminTab, string> = {
-    overview: "Studio Dashboard & Metrics",
-    analytics: "Website Visitors & Click Analytics",
-    enquiries: "Client Enquiries & CRM",
-    project_tracker: "Active Projects Production Pipeline",
-    invoices: "Client Invoices & Deals Billing",
-    coupons: "Promo Codes & Discount Manager",
-    triggers_log: "Automated Email & WhatsApp Triggers",
-    testimonials: "Testimonials & Reviews Showcase",
-    portfolio: "Portfolio Showcase",
-    services: "Services & Pricing Packages",
-    settings: "Site Settings & Security Mode",
+    overview: language === "pa" ? "ਸਟੂਡੀਓ ਡੈਸ਼ਬੋਰਡ ਅਤੇ ਮੁੱਖ ਰਿਪੋਰਟ" : "Studio Dashboard & Metrics",
+    analytics: language === "pa" ? "ਵੈੱਬਸਾਈਟ ਵਿਜ਼ਿਟਰ ਅਤੇ ਕਲਿੱਕ ਰਿਪੋਰਟ" : "Website Visitors & Click Analytics",
+    enquiries: language === "pa" ? "ਗਾਹਕਾਂ ਦੇ ਮੈਸੇਜ ਅਤੇ ਲੀਡਸ" : "Client Enquiries & CRM",
+    project_tracker: language === "pa" ? "ਚੱਲ ਰਹੇ ਵੈੱਬਸਾਈਟ ਆਰਡਰ" : "Active Projects Production Pipeline",
+    invoices: language === "pa" ? "ਗਾਹਕਾਂ ਦੇ ਬਿੱਲ ਅਤੇ ਪੇਮੈਂਟਸ" : "Client Invoices & Deals Billing",
+    coupons: language === "pa" ? "ਪ੍ਰੋਮੋ ਕੋਡ ਅਤੇ ਡਿਸਕਾਊਂਟ" : "Promo Codes & Discount Manager",
+    triggers_log: language === "pa" ? "ਆਟੋਮੈਟਿਕ ਵਟਸਐਪ ਤੇ ਈਮੇਲ ਸੁਨੇਹੇ" : "Automated Email & WhatsApp Triggers",
+    testimonials: language === "pa" ? "ਗਾਹਕਾਂ ਦੀ ਫੀਡਬੈਕ ਅਤੇ ਸਮੀਖਿਆਵਾਂ" : "Testimonials & Reviews Showcase",
+    portfolio: language === "pa" ? "ਪੋਰਟਫੋਲੀਓ ਡੈਮੋ ਵੈੱਬਸਾਈਟਾਂ" : "Portfolio Showcase",
+    services: language === "pa" ? "ਸਰਵਿਸ ਪੈਕੇਜ ਅਤੇ ਰੇਟ" : "Services & Pricing Packages",
+    settings: language === "pa" ? "ਵੈੱਬਸਾਈਟ ਸੈਟਿੰਗਸ ਅਤੇ ਪਾਸਵਰਡ" : "Site Settings & Security Mode",
   };
 
   return (
@@ -223,7 +233,7 @@ function AdminPage() {
         </main>
 
         <footer className="border-t border-[#1E4378] bg-[#061833] py-6 px-4 md:px-8 text-center text-xs text-[#94A3B8]">
-          <p>© 2026 WebNoura by Karan. Admin Command Center · All systems operational.</p>
+          <p>{t.footerText}</p>
         </footer>
       </div>
 

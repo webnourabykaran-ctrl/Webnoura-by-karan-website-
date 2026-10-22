@@ -26,6 +26,7 @@ import {
 import { AdminEnquiry, EnquiryStatus } from "@/types/admin";
 import { adminStore } from "@/lib/adminStore";
 import { formRateLimiter, useLockedClients } from "@/lib/formRateLimit";
+import { useAdminLanguage } from "@/lib/adminLanguage";
 
 interface EnquiriesTabProps {
   enquiries: AdminEnquiry[];
@@ -42,6 +43,7 @@ export function EnquiriesTab({
   onAddNewLead,
   onRefresh,
 }: EnquiriesTabProps) {
+  const { t, language } = useAdminLanguage();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -149,30 +151,30 @@ export function EnquiriesTab({
   const getStatusBadge = (status: EnquiryStatus) => {
     switch (status) {
       case "new":
-        return <span className="inline-flex items-center rounded-full bg-blue-500/20 border border-blue-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-blue-400">New Lead</span>;
+        return <span className="inline-flex items-center rounded-full bg-blue-500/20 border border-blue-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-blue-400">{t.statusNew}</span>;
       case "contacted":
-        return <span className="inline-flex items-center rounded-full bg-indigo-500/20 border border-indigo-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-indigo-400">Contacted</span>;
+        return <span className="inline-flex items-center rounded-full bg-indigo-500/20 border border-indigo-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-indigo-400">{language === "pa" ? "ਗੱਲ ਹੋਈ (Contacted)" : "Contacted"}</span>;
       case "in_discussion":
-        return <span className="inline-flex items-center rounded-full bg-amber-500/20 border border-amber-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-amber-400">In Discussion</span>;
+        return <span className="inline-flex items-center rounded-full bg-amber-500/20 border border-amber-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-amber-400">{t.statusInDiscussion}</span>;
       case "proposal_sent":
-        return <span className="inline-flex items-center rounded-full bg-purple-500/20 border border-purple-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-purple-400">Proposal Sent</span>;
+        return <span className="inline-flex items-center rounded-full bg-purple-500/20 border border-purple-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-purple-400">{t.statusQuoted}</span>;
       case "in_progress":
-        return <span className="inline-flex items-center rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-emerald-400">In Progress</span>;
+        return <span className="inline-flex items-center rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-emerald-400">{t.statusInProgress}</span>;
       case "completed":
-        return <span className="inline-flex items-center rounded-full bg-cyan-500/20 border border-cyan-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-cyan-300">Completed</span>;
+        return <span className="inline-flex items-center rounded-full bg-cyan-500/20 border border-cyan-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-cyan-300">{t.statusCompleted}</span>;
       case "declined":
-        return <span className="inline-flex items-center rounded-full bg-rose-500/20 border border-rose-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-rose-400">Declined</span>;
+        return <span className="inline-flex items-center rounded-full bg-rose-500/20 border border-rose-500/40 px-2.5 py-0.5 text-xs font-mono font-bold text-rose-400">{t.statusDeclined}</span>;
     }
   };
 
   const statusOptions: { label: string; value: EnquiryStatus }[] = [
-    { label: "New Lead", value: "new" },
-    { label: "Contacted", value: "contacted" },
-    { label: "In Discussion", value: "in_discussion" },
-    { label: "Proposal Sent", value: "proposal_sent" },
-    { label: "In Progress (Building)", value: "in_progress" },
-    { label: "Completed & Live", value: "completed" },
-    { label: "Declined / Cancelled", value: "declined" },
+    { label: language === "pa" ? "ਨਵੀਂ ਲੀਡ (New Lead)" : "New Lead", value: "new" },
+    { label: language === "pa" ? "ਗੱਲ ਹੋਈ (Contacted)" : "Contacted", value: "contacted" },
+    { label: language === "pa" ? "ਗੱਲਬਾਤ ਚੱਲ ਰਹੀ ਹੈ (In Discussion)" : "In Discussion", value: "in_discussion" },
+    { label: language === "pa" ? "ਕੋਟੇਸ਼ਨ ਭੇਜੀ (Proposal Sent)" : "Proposal Sent", value: "proposal_sent" },
+    { label: language === "pa" ? "ਕੰਮ ਚੱਲ ਰਿਹਾ ਹੈ (In Progress)" : "In Progress (Building)", value: "in_progress" },
+    { label: language === "pa" ? "ਮੁਕੰਮਲ ਤੇ ਲਾਈਵ (Completed & Live)" : "Completed & Live", value: "completed" },
+    { label: language === "pa" ? "ਰੱਦ / ਬੰਦ (Declined)" : "Declined / Cancelled", value: "declined" },
   ];
 
   return (

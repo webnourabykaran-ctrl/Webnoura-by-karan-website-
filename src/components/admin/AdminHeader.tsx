@@ -1,6 +1,8 @@
 import { Menu, RefreshCw, Plus, Download, Sparkles, Check, Power, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { adminStore } from "@/lib/adminStore";
+import { useAdminLanguage } from "@/lib/adminLanguage";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface AdminHeaderProps {
   title: string;
@@ -19,6 +21,7 @@ export function AdminHeader({
 }: AdminHeaderProps) {
   const [copied, setCopied] = useState(false);
   const settings = adminStore.getSettings();
+  const { t } = useAdminLanguage();
 
   const handleExportCSV = () => {
     adminStore.exportEnquiriesToCSV();
@@ -66,18 +69,21 @@ export function AdminHeader({
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
             </span>
             <span className="font-mono text-[10px] text-emerald-300 font-semibold">
-              Live Cloud Sync · Real-Time
+              {t.cloudSync}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Action buttons & Website ON/OFF Switch */}
+      {/* Action buttons & Language Switcher */}
       <div className="flex items-center gap-2 md:gap-3">
+        {/* Language Switcher Toggle */}
+        <LanguageSwitcher />
+
         {/* Website ON/OFF Switch Button */}
         <button
           onClick={handleToggleWebsiteOnline}
-          title={settings.websiteOnline ? "Turn Website Offline (Maintenance)" : "Turn Website Live (Online)"}
+          title={settings.websiteOnline ? "Turn Website Offline" : "Turn Website Live"}
           className={`inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all shadow-md ${
             settings.websiteOnline
               ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25"
@@ -86,7 +92,7 @@ export function AdminHeader({
         >
           <Power className="h-3.5 w-3.5" />
           <span className="hidden sm:inline font-mono">
-            Website: {settings.websiteOnline ? "ONLINE (LIVE)" : "OFFLINE (MAINTENANCE)"}
+            {settings.websiteOnline ? t.websiteOnline : t.websiteOffline}
           </span>
           <span className="sm:hidden font-mono">
             {settings.websiteOnline ? "ON" : "OFF"}
@@ -102,7 +108,7 @@ export function AdminHeader({
           className="hidden md:inline-flex items-center gap-1.5 rounded-xl border border-[#1E4378] bg-[#0B2D5B] hover:border-[#3B82F6] text-[#CBD5E1] hover:text-white px-3 py-1.5 text-xs font-semibold transition-all"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>View Site ↗</span>
+          <span>{t.viewSite}</span>
         </a>
 
         {/* Sync button */}
@@ -113,7 +119,7 @@ export function AdminHeader({
           className="inline-flex items-center gap-1.5 rounded-xl border border-[#1E4378] bg-[#0B2D5B] px-3 py-1.5 text-xs font-semibold text-[#CBD5E1] hover:border-[#3B82F6] hover:text-white transition-all duration-200"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin text-[#3B82F6]" : "text-[#93C5FD]"}`} />
-          <span className="hidden md:inline">{syncing ? "Syncing..." : "Sync"}</span>
+          <span className="hidden md:inline">{syncing ? t.syncing : t.sync}</span>
         </button>
 
         {/* Export CSV button */}
@@ -123,7 +129,7 @@ export function AdminHeader({
           className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-[#1E4378] bg-[#0B2D5B] px-3 py-1.5 text-xs font-semibold text-[#CBD5E1] hover:border-[#3B82F6] hover:text-white transition-all duration-200"
         >
           {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Download className="h-3.5 w-3.5 text-[#93C5FD]" />}
-          <span className="hidden lg:inline">{copied ? "Exported" : "CSV"}</span>
+          <span className="hidden lg:inline">{copied ? t.exported : t.csv}</span>
         </button>
 
         {/* Add Lead CTA */}
@@ -132,7 +138,7 @@ export function AdminHeader({
           className="inline-flex items-center gap-1.5 rounded-xl bg-[#3B82F6] hover:bg-[#2563EB] text-white px-3.5 py-1.5 text-xs font-bold transition-all duration-200 shadow-md shadow-[#3B82F6]/30 hover:shadow-lg hover:shadow-[#3B82F6]/40 hover:-translate-y-0.5"
         >
           <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Add Lead</span>
+          <span className="hidden sm:inline">{t.addLead}</span>
         </button>
       </div>
     </header>

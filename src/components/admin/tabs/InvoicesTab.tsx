@@ -26,6 +26,7 @@ import { AdminInvoice, InvoicePaymentStatus } from "@/types/admin";
 import { adminStore } from "@/lib/adminStore";
 import { InvoiceModal } from "../invoices/InvoiceModal";
 import { InvoiceViewerModal } from "../invoices/InvoiceViewerModal";
+import { useAdminLanguage } from "@/lib/adminLanguage";
 
 interface InvoicesTabProps {
   invoices: AdminInvoice[];
@@ -34,6 +35,7 @@ interface InvoicesTabProps {
 }
 
 export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabProps) {
+  const { t, language } = useAdminLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
@@ -128,14 +130,14 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-display text-lg md:text-xl font-extrabold text-white">
-                  Client Invoices &amp; Deals Billing (ਗਾਹਕਾਂ ਦੇ ਬਿੱਲ ਤੇ ਪੇਮੈਂਟਸ)
+                  {t.invoicesTabTitle}
                 </h1>
                 <span className="rounded-full bg-blue-500/20 border border-blue-500/30 px-2.5 py-0.5 text-[10px] font-mono font-bold text-blue-400">
-                  Live Cloud Sync
+                  {t.cloudSync}
                 </span>
               </div>
               <p className="text-xs text-[#94A3B8] mt-1">
-                Create official WebNoura invoices for client deals, record advance payments, and share directly via WhatsApp or printable PDF.
+                {t.invoicesTabDesc}
               </p>
             </div>
           </div>
@@ -148,7 +150,7 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02]"
           >
             <Plus className="h-4 w-4" />
-            <span>+ Create Deal Invoice (ਨਵਾਂ ਬਿੱਲ ਬਣਾਓ)</span>
+            <span>{t.createInvoiceBtn}</span>
           </button>
         </div>
       </div>
@@ -158,7 +160,7 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
         {/* Total Invoiced */}
         <div className="rounded-2xl border border-[#1E4378] bg-[#0A2548]/50 p-5 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[#94A3B8] font-medium">Total Invoiced (ਕੁੱਲ ਬਿੱਲ)</span>
+            <span className="text-xs text-[#94A3B8] font-medium">{t.totalInvoiced}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
               <DollarSign className="h-4 w-4" />
             </div>
@@ -167,15 +169,17 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             <h3 className="font-display text-2xl font-black text-white">
               ₹{totalInvoiced.toLocaleString("en-IN")}
             </h3>
-            <span className="text-[11px] font-mono text-[#94A3B8]">{invoices.length} deals</span>
+            <span className="text-[11px] font-mono text-[#94A3B8]">{invoices.length} {language === "pa" ? "ਬਿੱਲ" : "deals"}</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-1">Total revenue generated from deals</p>
+          <p className="text-[11px] text-[#94A3B8] mt-1">
+            {language === "pa" ? "ਪ੍ਰੋਜੈਕਟਾਂ ਦੇ ਬਿੱਲਾਂ ਦੀ ਕੁੱਲ ਰਕਮ" : "Total revenue generated from deals"}
+          </p>
         </div>
 
         {/* Collected Payments */}
         <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-emerald-300 font-medium">Collected / Paid (ਪ੍ਰਾਪਤ ਰਕਮ)</span>
+            <span className="text-xs text-emerald-300 font-medium">{t.collectedPaid}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400">
               <CheckCircle2 className="h-4 w-4" />
             </div>
@@ -186,13 +190,15 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             </h3>
             <span className="text-[11px] font-mono text-emerald-300 font-bold">{collectionRate}%</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-1">Cash &amp; UPI received in bank</p>
+          <p className="text-[11px] text-[#94A3B8] mt-1">
+            {language === "pa" ? "ਬੈਂਕ / UPI ਰਾਹੀਂ ਆਈ ਪੇਮੈਂਟ" : "Cash & UPI received in bank"}
+          </p>
         </div>
 
         {/* Pending Balance Due */}
         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-amber-300 font-medium">Pending Balance (ਬਾਕੀ ਰਕਮ)</span>
+            <span className="text-xs text-amber-300 font-medium">{t.pendingBalance}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400">
               <Clock className="h-4 w-4" />
             </div>
@@ -201,15 +207,17 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             <h3 className="font-display text-2xl font-black text-amber-400">
               ₹{totalBalanceDue.toLocaleString("en-IN")}
             </h3>
-            <span className="text-[11px] font-mono text-amber-300 font-bold">{pendingCount + partialCount} due</span>
+            <span className="text-[11px] font-mono text-amber-300 font-bold">{pendingCount + partialCount} {language === "pa" ? "ਬਾਕੀ" : "due"}</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-1">Receivable upon project completion</p>
+          <p className="text-[11px] text-[#94A3B8] mt-1">
+            {language === "pa" ? "ਵੈੱਬਸਾਈਟ ਪੂਰੀ ਹੋਣ 'ਤੇ ਲੈਣ ਵਾਲੀ ਰਕਮ" : "Receivable upon project completion"}
+          </p>
         </div>
 
         {/* Paid Invoices Count */}
         <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-5 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-cyan-300 font-medium">Paid Status (ਪੂਰੇ ਹੋਏ)</span>
+            <span className="text-xs text-cyan-300 font-medium">{t.paidStatus}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-400">
               <Sparkles className="h-4 w-4" />
             </div>
@@ -218,9 +226,11 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             <h3 className="font-display text-2xl font-black text-cyan-400">
               {paidCount} / {invoices.length}
             </h3>
-            <span className="text-[11px] font-mono text-cyan-300">closed</span>
+            <span className="text-[11px] font-mono text-cyan-300">{language === "pa" ? "ਪੂਰੇ ਹੋਏ" : "closed"}</span>
           </div>
-          <p className="text-[11px] text-[#94A3B8] mt-1">Invoices cleared &amp; delivered</p>
+          <p className="text-[11px] text-[#94A3B8] mt-1">
+            {language === "pa" ? "ਕਲੀਅਰ ਹੋਏ ਕਲਾਇੰਟ ਬਿੱਲ" : "Invoices cleared & delivered"}
+          </p>
         </div>
       </div>
 
@@ -229,10 +239,10 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
         {/* Status Filters */}
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
           {[
-            { id: "all", label: `All Deals (${invoices.length})` },
-            { id: "paid", label: `Paid (${paidCount})` },
-            { id: "partial", label: `Partial (${partialCount})` },
-            { id: "pending", label: `Pending (${pendingCount})` },
+            { id: "all", label: `${t.allDeals} (${invoices.length})` },
+            { id: "paid", label: `${t.paidFilter} (${paidCount})` },
+            { id: "partial", label: `${t.partialFilter} (${partialCount})` },
+            { id: "pending", label: `${t.pendingFilter} (${pendingCount})` },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -253,7 +263,7 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#64748B]" />
           <input
             type="text"
-            placeholder="Search by client, invoice #, phone..."
+            placeholder={t.searchInvoicePlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full rounded-xl border border-[#1E4378] bg-[#0A2548]/60 pl-10 pr-4 py-2 text-xs text-white placeholder:text-[#64748B] focus:border-blue-500 focus:outline-none"
@@ -267,11 +277,9 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 mb-4">
             <FileText className="h-7 w-7" />
           </div>
-          <h3 className="font-display text-base font-bold text-white">No Invoices Found</h3>
+          <h3 className="font-display text-base font-bold text-white">{t.noInvoicesFound}</h3>
           <p className="text-xs text-[#94A3B8] max-w-md mx-auto mt-1">
-            {searchTerm || statusFilter !== "all"
-              ? "No invoices match your current search or status filter."
-              : "You haven't created any deal invoices yet. Generate your first invoice when a client confirms a project deal!"}
+            {t.noInvoicesDesc}
           </p>
           <button
             onClick={() => {
@@ -282,7 +290,7 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-xs font-bold text-white transition-all shadow-md"
           >
             <Plus className="h-4 w-4" />
-            <span>Create First Invoice (ਨਵਾਂ ਬਿੱਲ ਬਣਾਓ)</span>
+            <span>{t.createInvoiceBtn}</span>
           </button>
         </div>
       ) : (
@@ -394,19 +402,19 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
                     <button
                       onClick={() => setViewingInvoice(inv)}
                       className="flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-all shadow-sm"
-                      title="View & print full bill"
+                      title={t.viewPrint}
                     >
                       <FileText className="h-3.5 w-3.5" />
-                      <span>View &amp; Print</span>
+                      <span>{t.viewPrint}</span>
                     </button>
 
                     <button
                       onClick={() => handleDirectWhatsApp(inv)}
                       className="flex items-center gap-1.5 rounded-xl bg-[#25D366]/20 border border-[#25D366]/40 hover:bg-[#25D366]/30 px-3 py-1.5 text-xs font-semibold text-[#25D366] transition-all"
-                      title="Send on WhatsApp"
+                      title={t.sendWhatsApp}
                     >
                       <Send className="h-3.5 w-3.5" />
-                      <span>WhatsApp</span>
+                      <span>{t.sendWhatsApp}</span>
                     </button>
                   </div>
 
@@ -415,9 +423,9 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
                       <button
                         onClick={() => handleMarkAsPaid(inv)}
                         className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1.5 text-[11px] font-semibold text-emerald-300 transition-colors"
-                        title="Mark fully paid"
+                        title={t.markPaid}
                       >
-                        ✓ Mark Paid
+                        {t.markPaid}
                       </button>
                     )}
 

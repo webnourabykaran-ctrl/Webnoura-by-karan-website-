@@ -29,6 +29,7 @@ import { adminStore } from "@/lib/adminStore";
 import { AdminEnquiry, AnalyticsData } from "@/types/admin";
 import { calculateWeeklyVisits, calculateMonthlyVisits } from "@/lib/analytics";
 import { useLockedClients } from "@/lib/formRateLimit";
+import { useAdminLanguage } from "@/lib/adminLanguage";
 
 interface OverviewTabProps {
   enquiries: AdminEnquiry[];
@@ -45,6 +46,8 @@ export function OverviewTab({
   onOpenEnquiry,
   onAddNewLead,
 }: OverviewTabProps) {
+  const { t, language } = useAdminLanguage();
+
   // Settings & locked clients
   const settings = adminStore.getSettings();
   const lockedClients = useLockedClients();
@@ -93,15 +96,15 @@ export function OverviewTab({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "new":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-blue-400">New</span>;
+        return <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-blue-400">{t.statusNew}</span>;
       case "in_discussion":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-amber-400">In Discussion</span>;
+        return <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-amber-400">{t.statusInDiscussion}</span>;
       case "proposal_sent":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-purple-500/15 border border-purple-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-purple-400">Quoted</span>;
+        return <span className="inline-flex items-center gap-1 rounded-full bg-purple-500/15 border border-purple-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-purple-400">{t.statusQuoted}</span>;
       case "in_progress":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-400">In Progress</span>;
+        return <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-400">{t.statusInProgress}</span>;
       case "completed":
-        return <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-cyan-300">Completed</span>;
+        return <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 text-[11px] font-mono font-bold text-cyan-300">{t.statusCompleted}</span>;
       default:
         return <span className="inline-flex items-center gap-1 rounded-full bg-slate-500/15 border border-slate-500/30 px-2.5 py-0.5 text-[11px] font-mono text-slate-400">{status}</span>;
     }
@@ -109,7 +112,7 @@ export function OverviewTab({
 
   return (
     <div className="space-y-8">
-      {/* Welcome & 4-Card Quick Hub (ਸਭ ਤੋਂ ਜ਼ਰੂਰੀ ਕੰਮ) */}
+      {/* Welcome & 5-Card Quick Hub */}
       <div className="rounded-3xl border border-[#1E4378] bg-gradient-to-br from-[#0B2D5B] via-[#0A2548] to-[#061833] p-6 md:p-8 shadow-2xl relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-[#3B82F6]/10 blur-3xl pointer-events-none" />
@@ -119,18 +122,18 @@ export function OverviewTab({
             <div className="flex items-center gap-2">
               <span className="text-xl">👋</span>
               <h2 className="font-display text-xl md:text-2xl font-extrabold text-white">
-                ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਰਨ ਜੀ! <span className="text-[#93C5FD] font-semibold text-base md:text-lg">(WebNoura Studio Control)</span>
+                {t.greeting} <span className="text-[#93C5FD] font-semibold text-base md:text-lg">({language === "pa" ? "ਵੈੱਬਨੌਰਾ ਸਟੂਡੀਓ ਕੰਟਰੋਲ" : "WebNoura Studio Control"})</span>
               </h2>
             </div>
             <p className="text-xs md:text-sm text-[#94A3B8] mt-1.5 max-w-2xl">
-              ਇੱਥੋਂ ਤੁਸੀਂ ਆਪਣੀ ਵੈੱਬਸਾਈਟ ਬਹੁਤ ਸੌਖੀ ਤਰ੍ਹਾਂ ਸੰਭਾਲ ਸਕਦੇ ਹੋ — ਨਵੇਂ ਗਾਹਕਾਂ ਨਾਲ WhatsApp 'ਤੇ ਗੱਲ ਕਰੋ, ਵਿਜ਼ਿਟਰ ਰਿਪੋਰਟ ਦੇਖੋ ਅਤੇ ਸੈਟਿੰਗਸ ਬਦਲੋ।
+              {t.studioSubtitle}
             </p>
           </div>
 
           <div className="flex items-center gap-2 self-start md:self-auto">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 text-xs font-mono font-bold text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              ਸਿਸਟਮ ਚਾਲੂ (Active)
+              {t.systemActive}
             </span>
           </div>
         </div>
@@ -151,17 +154,17 @@ export function OverviewTab({
                   ? "bg-blue-500/20 text-blue-400 border border-blue-500/40 animate-pulse" 
                   : "bg-slate-500/20 text-slate-300"
               }`}>
-                {newLeads > 0 ? `${newLeads} ਨਵੇਂ` : `${totalLeads} ਕੁੱਲ`}
+                {newLeads > 0 ? `${newLeads} ${language === "pa" ? "ਨਵੇਂ" : "new"}` : `${totalLeads} ${language === "pa" ? "ਕੁੱਲ" : "total"}`}
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-[#93C5FD] transition-colors">
-              1. ਗਾਹਕਾਂ ਦੇ ਮੈਸੇਜ
+              {t.quickEnquiriesTitle}
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਨਵੇਂ ਫ਼ਾਰਮ ਵੇਖੋ, ਸਿੱਧਾ WhatsApp ਚੈਟ ਕਰੋ, ਜਾਂ ਕਲਾਇੰਟ ਟਾਈਮਰ ਬੰਦ ਕਰੋ।
+              {t.quickEnquiriesDesc}
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#3B82F6] group-hover:text-white transition-colors">
-              <span>ਮੈਸੇਜ (Leads)</span>
+              <span>{t.quickEnquiriesCta}</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -176,17 +179,17 @@ export function OverviewTab({
                 <Activity className="h-5 w-5" />
               </div>
               <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                {todayVisits} ਅੱਜ ਆਏ
+                {todayVisits} {language === "pa" ? "ਅੱਜ ਆਏ" : "today"}
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-emerald-300 transition-colors">
-              2. ਵਿਜ਼ਿਟਰਸ
+              {t.quickVisitorsTitle}
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਵੇਖੋ ਕਿੰਨੇ ਲੋਕ ਆਏ, ਕਿਹੜੇ ਸ਼ਹਿਰੋਂ ਦੇਖਿਆ ਅਤੇ ਕਿਹੜੇ ਬਟਨ ਦਬਾਏ।
+              {t.quickVisitorsDesc}
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-emerald-400 group-hover:text-white transition-colors">
-              <span>ਵਿਜ਼ਿਟਰ (Traffic)</span>
+              <span>{t.quickVisitorsCta}</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -201,17 +204,17 @@ export function OverviewTab({
                 <Kanban className="h-5 w-5" />
               </div>
               <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                {inPipeline} ਆਰਡਰ
+                {inPipeline} {language === "pa" ? "ਆਰਡਰ" : "orders"}
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-amber-300 transition-colors">
-              3. ਚੱਲ ਰਹੇ ਆਰਡਰ
+              {t.quickOrdersTitle}
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਜਿਹੜੀਆਂ ਵੈੱਬਸਾਈਟਾਂ ਬਣ ਰਹੀਆਂ ਹਨ, ਉਹਨਾਂ ਦਾ ਸਟੇਟਸ ਟਰੈਕ ਕਰੋ।
+              {t.quickOrdersDesc}
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-amber-400 group-hover:text-white transition-colors">
-              <span>ਆਰਡਰ (Projects)</span>
+              <span>{t.quickOrdersCta}</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -226,17 +229,17 @@ export function OverviewTab({
                 <Receipt className="h-5 w-5" />
               </div>
               <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                {invoices.length} ਬਿੱਲ
+                {invoices.length} {language === "pa" ? "ਬਿੱਲ" : "invoices"}
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-cyan-300 transition-colors">
-              4. ਬਿੱਲ ਤੇ ਪੇਮੈਂਟਸ
+              {t.quickInvoicesTitle}
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਗਾਹਕਾਂ ਨੂੰ ਬਿੱਲ ਬਣਾ ਕੇ ਭੇਜੋ, ਪੇਮੈਂਟ ਰਿਕਾਰਡ ਕਰੋ ਤੇ WhatsApp 'ਤੇ ਸ਼ੇਅਰ ਕਰੋ।
+              {t.quickInvoicesDesc}
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-cyan-400 group-hover:text-white transition-colors">
-              <span>ਬਿੱਲ ਬਣਾਓ (Billing)</span>
+              <span>{t.quickInvoicesCta}</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -259,13 +262,13 @@ export function OverviewTab({
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-purple-300 transition-colors">
-              5. ਸੈਟਿੰਗਸ & ਕੰਟਰੋਲ
+              {t.quickSettingsTitle}
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਵੈੱਬਸਾਈਟ ਆਨ/ਆਫ਼ ਕਰੋ, ਨਵਾਂ ਆਫ਼ਰ ਲਗਾਓ ਜਾਂ ਪਾਸਵਰਡ ਬਦਲੋ।
+              {t.quickSettingsDesc}
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-purple-400 group-hover:text-white transition-colors">
-              <span>ਸੈਟਿੰਗਸ (Settings)</span>
+              <span>{t.quickSettingsCta}</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -281,13 +284,13 @@ export function OverviewTab({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-display font-extrabold text-sm text-white">Live Website Traffic & Clicks (ਲਾਈਵ ਵਿਜ਼ਿਟਰ ਰਿਕਾਰਡ)</span>
+                <span className="font-display font-extrabold text-sm text-white">{t.liveTrafficHeading}</span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" /> Active
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" /> {t.systemActive}
                 </span>
               </div>
               <p className="text-xs text-[#94A3B8] mt-0.5">
-                {todayVisits} ਅੱਜ (Today) · {weeklyVisits} ਇਸ ਹਫ਼ਤੇ (Week) · {monthlyVisits} ਇਸ ਮਹੀਨੇ (Month) · {totalVisits} ਕੁੱਲ ਵਿਜ਼ਿਟ (All-Time) · {totalClicks} ਬਟਨ ਕਲਿੱਕ (Clicks)
+                {todayVisits} {t.todayVisits} · {weeklyVisits} {t.weeklyVisits} · {monthlyVisits} {t.monthlyVisits} · {totalVisits} {t.allTime} · {totalClicks} {t.clicks}
               </p>
             </div>
           </div>
@@ -296,7 +299,7 @@ export function OverviewTab({
             {topClicked && (
               <div className="hidden sm:flex items-center gap-2 rounded-xl border border-[#1E4378] bg-[#061833]/70 px-3 py-1.5 text-xs">
                 <MousePointerClick className="h-3.5 w-3.5 text-amber-400" />
-                <span className="text-[#94A3B8]">ਸਭ ਤੋਂ ਵੱਧ ਕਲਿੱਕ:</span>
+                <span className="text-[#94A3B8]">{t.topClicked}</span>
                 <span className="font-bold text-white truncate max-w-[180px]">{topClicked[0]}</span>
                 <span className="font-mono text-amber-400 font-bold">({topClicked[1]})</span>
               </div>
@@ -306,7 +309,7 @@ export function OverviewTab({
               onClick={() => setActiveTab("analytics")}
               className="inline-flex items-center gap-1.5 rounded-xl bg-[#3B82F6] hover:bg-[#2563EB] text-white px-3.5 py-1.5 text-xs font-bold transition-all shadow-md shadow-[#3B82F6]/20"
             >
-              See What Visitors Clicked <ArrowUpRight className="h-3.5 w-3.5" />
+              {t.seeClicksCta}
             </button>
           </div>
         </div>
@@ -317,7 +320,9 @@ export function OverviewTab({
         {/* Total Inquiries */}
         <div className="rounded-2xl border border-[#1E4378] bg-[#0B2D5B]/70 p-6 shadow-lg backdrop-blur-sm transition-transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">Total Inquiries (ਕੁੱਲ ਆਏ ਗਾਹਕ)</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">
+              {language === "pa" ? "ਕੁੱਲ ਆਏ ਗਾਹਕ (Total Inquiries)" : "Total Inquiries"}
+            </span>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3B82F6]/15 text-[#3B82F6] border border-[#3B82F6]/30">
               <Users className="h-5 w-5" />
             </div>
@@ -326,32 +331,42 @@ export function OverviewTab({
             <span className="font-display text-3xl font-extrabold text-white">{totalLeads}</span>
             {newLeads > 0 && (
               <span className="inline-flex items-center text-xs font-bold text-emerald-400">
-                +{newLeads} new
+                +{newLeads} {language === "pa" ? "ਨਵੇਂ" : "new"}
               </span>
             )}
           </div>
-          <p className="mt-1 text-xs text-[#94A3B8]">Client website requests received</p>
+          <p className="mt-1 text-xs text-[#94A3B8]">
+            {language === "pa" ? "ਗਾਹਕਾਂ ਦੇ ਆਏ ਮੈਸੇਜ ਤੇ ਲੀਡਸ" : "Client website requests received"}
+          </p>
         </div>
 
         {/* Active Deals in Pipeline */}
         <div className="rounded-2xl border border-[#1E4378] bg-[#0B2D5B]/70 p-6 shadow-lg backdrop-blur-sm transition-transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">Active Deals (ਚੱਲ ਰਹੇ ਆਰਡਰ)</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">
+              {language === "pa" ? "ਚੱਲ ਰਹੇ ਆਰਡਰ (Active Deals)" : "Active Deals"}
+            </span>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
               <TrendingUp className="h-5 w-5" />
             </div>
           </div>
           <div className="mt-4 flex items-baseline gap-2">
             <span className="font-display text-3xl font-extrabold text-white">{inPipeline}</span>
-            <span className="text-xs text-amber-300 font-medium">in discussion / build</span>
+            <span className="text-xs text-amber-300 font-medium">
+              {language === "pa" ? "ਗੱਲਬਾਤ / ਕੰਮ ਚੱਲਦਾ" : "in discussion / build"}
+            </span>
           </div>
-          <p className="mt-1 text-xs text-[#94A3B8]">Active proposals & live builds</p>
+          <p className="mt-1 text-xs text-[#94A3B8]">
+            {language === "pa" ? "ਚੱਲ ਰਹੇ ਪ੍ਰੋਜੈਕਟ ਤੇ ਵੈੱਬਸਾਈਟਾਂ" : "Active proposals & live builds"}
+          </p>
         </div>
 
         {/* Estimated Pipeline Value */}
         <div className="rounded-2xl border border-[#1E4378] bg-[#0B2D5B]/70 p-6 shadow-lg backdrop-blur-sm transition-transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">Pipeline Value (ਅੰਦਾਜ਼ਨ ਕਮਾਈ)</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">
+              {language === "pa" ? "ਅੰਦਾਜ਼ਨ ਕਮਾਈ (Pipeline Value)" : "Pipeline Value"}
+            </span>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
               <DollarSign className="h-5 w-5" />
             </div>
@@ -361,22 +376,28 @@ export function OverviewTab({
               ₹{totalPipelineValue.toLocaleString("en-IN")}
             </span>
           </div>
-          <p className="mt-1 text-xs text-[#94A3B8]">Estimated potential deal volume</p>
+          <p className="mt-1 text-xs text-[#94A3B8]">
+            {language === "pa" ? "ਪ੍ਰੋਜੈਕਟਾਂ ਦੀ ਅੰਦਾਜ਼ਨ ਕੁੱਲ ਰਕਮ" : "Estimated potential deal volume"}
+          </p>
         </div>
 
         {/* Delivered / Completed */}
         <div className="rounded-2xl border border-[#1E4378] bg-[#0B2D5B]/70 p-6 shadow-lg backdrop-blur-sm transition-transform hover:-translate-y-0.5">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">Launched (ਕੰਪਲੀਟ ਵੈੱਬਸਾਈਟਾਂ)</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-[#93C5FD]">
+              {language === "pa" ? "ਕੰਪਲੀਟ ਵੈੱਬਸਾਈਟਾਂ (Launched)" : "Launched"}
+            </span>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </div>
           <div className="mt-4 flex items-baseline gap-2">
             <span className="font-display text-3xl font-extrabold text-white">{completed}</span>
-            <span className="text-xs text-cyan-300 font-medium">{conversionRate}% win rate</span>
+            <span className="text-xs text-cyan-300 font-medium">{conversionRate}% {language === "pa" ? "ਕਾਮਯਾਬੀ" : "win rate"}</span>
           </div>
-          <p className="mt-1 text-xs text-[#94A3B8]">Completed & live client websites</p>
+          <p className="mt-1 text-xs text-[#94A3B8]">
+            {language === "pa" ? "ਮੁਕੰਮਲ ਹੋ ਕੇ ਲਾਈਵ ਵੈੱਬਸਾਈਟਾਂ" : "Completed & live client websites"}
+          </p>
         </div>
       </div>
 

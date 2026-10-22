@@ -16,6 +16,8 @@ import {
   Power,
 } from "lucide-react";
 import { adminStore } from "@/lib/adminStore";
+import { useAdminLanguage } from "@/lib/adminLanguage";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export type AdminTab =
   | "overview"
@@ -48,37 +50,38 @@ export function AdminSidebar({
   setOpen,
 }: AdminSidebarProps) {
   const settings = adminStore.getSettings();
+  const { language, t } = useAdminLanguage();
 
   const navSections = [
     {
-      category: "MAIN HUB (ਮੁੱਖ ਭਾਗ)",
+      category: language === "pa" ? "ਮੁੱਖ ਭਾਗ (MAIN HUB)" : "MAIN HUB",
       items: [
-        { id: "overview" as AdminTab, label: "Dashboard", sublabel: "ਮੁੱਖ ਸਮਰੀ · Studio Overview", icon: LayoutDashboard },
-        { id: "enquiries" as AdminTab, label: "Client Enquiries", sublabel: "ਗਾਹਕਾਂ ਦੇ ਮੈਸੇਜ · WhatsApp Leads", icon: Inbox, badge: unreadCount },
-        { id: "analytics" as AdminTab, label: "Visitors & Clicks", sublabel: "ਵੈੱਬਸਾਈਟ ਟ੍ਰੈਫਿਕ · Visitor Report", icon: MousePointerClick },
+        { id: "overview" as AdminTab, label: t.dashboard, sublabel: t.dashboardSub, icon: LayoutDashboard },
+        { id: "enquiries" as AdminTab, label: t.enquiries, sublabel: t.enquiriesSub, icon: Inbox, badge: unreadCount },
+        { id: "analytics" as AdminTab, label: t.visitors, sublabel: t.visitorsSub, icon: MousePointerClick },
       ],
     },
     {
-      category: "CLIENTS & PROJECTS (ਕੰਮ ਅਤੇ ਆਰਡਰ)",
+      category: language === "pa" ? "ਕੰਮ ਅਤੇ ਆਰਡਰ (DEALS & PROJECTS)" : "CLIENTS & PROJECTS",
       items: [
-        { id: "project_tracker" as AdminTab, label: "Active Projects", sublabel: "ਚੱਲ ਰਹੇ ਆਰਡਰ · Pipeline Tracker", icon: Kanban },
-        { id: "invoices" as AdminTab, label: "Invoices & Deals", sublabel: "ਬਿੱਲ ਤੇ ਇਨਵੌਇਸ · Generate & Share PDF", icon: Receipt },
-        { id: "coupons" as AdminTab, label: "Promo Codes", sublabel: "ਕੂਪਨ ਤੇ ਆਫ਼ਰ · Discounts & ₹4,999", icon: Tag },
-        { id: "triggers_log" as AdminTab, label: "Notification Logs", sublabel: "ਮੈਸੇਜ ਰਿਕਾਰਡ · WhatsApp Triggers", icon: BellRing },
+        { id: "project_tracker" as AdminTab, label: t.activeProjects, sublabel: t.activeProjectsSub, icon: Kanban },
+        { id: "invoices" as AdminTab, label: t.invoices, sublabel: t.invoicesSub, icon: Receipt },
+        { id: "coupons" as AdminTab, label: t.coupons, sublabel: t.couponsSub, icon: Tag },
+        { id: "triggers_log" as AdminTab, label: t.notifications, sublabel: t.notificationsSub, icon: BellRing },
       ],
     },
     {
-      category: "WEBSITE CONTENT (ਵੈੱਬਸਾਈਟ ਡਾਟਾ)",
+      category: language === "pa" ? "ਵੈੱਬਸਾਈਟ ਡਾਟਾ (CONTENT)" : "WEBSITE CONTENT",
       items: [
-        { id: "portfolio" as AdminTab, label: "Portfolio Works", sublabel: "ਵੈੱਬਸਾਈਟ ਸੈਂਪਲ · Live Demos", icon: Briefcase },
-        { id: "services" as AdminTab, label: "Services & Pricing", sublabel: "ਰੇਟ ਤੇ ਪਲਾਨ · ₹4,999 Packages", icon: Layers },
-        { id: "testimonials" as AdminTab, label: "Reviews Manager", sublabel: "ਗਾਹਕਾਂ ਦੀ ਫੀਡਬੈਕ · Client Reviews", icon: Star },
+        { id: "portfolio" as AdminTab, label: t.portfolio, sublabel: t.portfolioSub, icon: Briefcase },
+        { id: "services" as AdminTab, label: t.services, sublabel: t.servicesSub, icon: Layers },
+        { id: "testimonials" as AdminTab, label: t.reviews, sublabel: t.reviewsSub, icon: Star },
       ],
     },
     {
-      category: "SYSTEM & SETTINGS (ਕੰਟਰੋਲ)",
+      category: language === "pa" ? "ਕੰਟਰੋਲ (SYSTEM & SETTINGS)" : "SYSTEM & SETTINGS",
       items: [
-        { id: "settings" as AdminTab, label: "Settings & Mode", sublabel: "ਵੈੱਬਸਾਈਟ ਆਨ/ਆਫ਼ · Passwords & Config", icon: Settings },
+        { id: "settings" as AdminTab, label: t.settings, sublabel: t.settingsSub, icon: Settings },
       ],
     },
   ];
@@ -112,6 +115,14 @@ export function AdminSidebar({
                 Admin Console · Karan
               </span>
             </div>
+          </div>
+
+          {/* Quick Language Switcher in Sidebar */}
+          <div className="px-6 py-3 border-b border-[#1E4378]/60 bg-[#0A2548]/30 flex items-center justify-between">
+            <span className="text-[11px] font-mono text-[#94A3B8] font-bold">
+              {language === "pa" ? "ਭਾਸ਼ਾ ਚੁਣੋ:" : "Language:"}
+            </span>
+            <LanguageSwitcher compact />
           </div>
 
           {/* Categorized Navigation */}
