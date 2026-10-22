@@ -256,6 +256,15 @@ export const adminStore = {
       status: "delivered",
     });
 
+    // Push enquiry to live cloud database immediately
+    try {
+      import("./cloudStore").then(({ cloudStore }) => {
+        cloudStore.recordGlobalEnquiry(newEntry);
+      });
+    } catch {
+      // Ignore background sync errors
+    }
+
     return newEntry;
   },
 
@@ -766,6 +775,60 @@ export const adminStore = {
       return added;
     } catch {
       return 0;
+    }
+  },
+
+  /**
+   * Syncs real-time data from the live GitHub cloud store (Gist)
+   * Captures all visits, clicks, and enquiries submitted across all devices in real-time.
+   */
+  async syncFromCloud(): Promise<{ enquiriesAdded: number; totalVisits: number }> {
+    try {
+      const { cloudStore } = await import("./cloudStore");
+      const cloud = await cloudStore.fetchCloudData();
+      if (!cloud) return { enquiriesAdded: 0, totalVisits: 0 };
+
+      // 1. Sync Enquiries
+      let enquiriesAdded = 0;
+      if (Array.isArray(cloud.enquiries) && cloud.enquiries.length > 0) {
+        const localEnquiries = this.getEnquiries();
+        const merged = [...localEnquiries];
+        for (const remoteEnq of cloud.enquiries) {
+          if (!merged.some((m) => m.id === remoteEnq.id || (m.email === remoteEnq.email && m.created_at === remoteEnq.created_at))) {
+            merged.unshift(remoteEnq);
+            enquiriesAdded++;
+          }
+        }
+        if (enquiriesAdded > 0 || localEnquiries.length === 0) {
+          this.saveEnquiries(merged);
+        }
+      }
+
+      // 2. Sync Analytics
+      if (cloud.analytics && typeof cloud.analytics === "object") {
+        analyticsTracker.applyCloudAnalytics(cloud.analytics);
+      }
+
+      // 3. Sync Triggers
+      if (Array.isArray(cloud.triggers) && cloud.triggers.length > 0) {
+        const localTriggers = this.getTriggersLog();
+        const mergedTriggers = [...localTriggers];
+        for (const trg of cloud.triggers) {
+          if (!mergedTriggers.some((m) => m.id === trg.id)) {
+            mergedTriggers.unshift(trg);
+          }
+        }
+        this.saveTriggersLog(mergedTriggers.slice(0, 100));
+      }
+
+      notifyStoreUpdate("cloud_sync");
+      return {
+        enquiriesAdded,
+        totalVisits: cloud.analytics?.totalVisits || 0,
+      };
+    } catch (err) {
+      console.warn("Cloud store sync error:", err);
+      return { enquiriesAdded: 0, totalVisits: 0 };
     }
   },
 

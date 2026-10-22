@@ -4,6 +4,7 @@ import {
   MessageCircle,
   Mail,
   Smartphone,
+  Globe,
   CheckCircle2,
   Clock,
   Send,
@@ -57,6 +58,8 @@ export function TriggersLogTab({ logs, onRefresh }: TriggersLogTabProps) {
         return <span className="rounded-full bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-purple-400">Stage Milestone</span>;
       case "coupon_applied":
         return <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-amber-400">Coupon Used</span>;
+      case "visitor_action":
+        return <span className="rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-cyan-400">Visitor Action</span>;
       default:
         return <span className="rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono text-cyan-300">System Alert</span>;
     }
@@ -70,6 +73,9 @@ export function TriggersLogTab({ logs, onRefresh }: TriggersLogTabProps) {
         return <Mail className="h-4 w-4 text-blue-400" />;
       case "sms":
         return <Smartphone className="h-4 w-4 text-amber-400" />;
+      case "website":
+      default:
+        return <Globe className="h-4 w-4 text-cyan-400" />;
     }
   };
 

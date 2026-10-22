@@ -139,8 +139,8 @@ export interface PromoCoupon {
 
 export interface TriggerLog {
   id: string;
-  event: "enquiry_received" | "client_onboarded" | "project_stage_update" | "coupon_applied" | "custom_alert";
-  channel: "whatsapp" | "email" | "sms";
+  event: "enquiry_received" | "client_onboarded" | "project_stage_update" | "coupon_applied" | "custom_alert" | "visitor_action";
+  channel: "whatsapp" | "email" | "sms" | "website";
   recipient_name: string;
   recipient_contact: string;
   subject_or_preview: string;

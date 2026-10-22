@@ -60,13 +60,13 @@ export function AdminHeader({
           <h1 className="font-display text-lg md:text-xl font-extrabold tracking-tight text-white capitalize">
             {title}
           </h1>
-          <div className="hidden sm:flex items-center gap-2 mt-0.5">
+          <div className="flex items-center gap-2 mt-0.5">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
             </span>
-            <span className="font-mono text-[10px] text-[#93C5FD]">
-              WebNoura Engine · Live &amp; Synced
+            <span className="font-mono text-[10px] text-emerald-300 font-semibold">
+              Live Cloud Sync · Real-Time
             </span>
           </div>
         </div>

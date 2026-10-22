@@ -76,6 +76,14 @@ function AdminPage() {
     setAuthed(adminStore.isAuthenticated());
     reloadData();
 
+    // Initial sync from live cloud database on mount
+    adminStore.syncFromCloud().then(() => reloadData());
+
+    // Real-time polling every 8 seconds to automatically show new visits, clicks, and enquiries live!
+    const pollInterval = setInterval(() => {
+      adminStore.syncFromCloud().then(() => reloadData());
+    }, 8000);
+
     const handleStoreChange = () => {
       reloadData();
       setAuthed(adminStore.isAuthenticated());
@@ -88,6 +96,7 @@ function AdminPage() {
     window.addEventListener("webnoura_store_change", handleStoreChange);
     window.addEventListener("webnoura_analytics_change", handleAnalyticsChange);
     return () => {
+      clearInterval(pollInterval);
       window.removeEventListener("webnoura_store_change", handleStoreChange);
       window.removeEventListener("webnoura_analytics_change", handleAnalyticsChange);
     };
@@ -95,9 +104,12 @@ function AdminPage() {
 
   const handleRefresh = async () => {
     setSyncing(true);
-    await adminStore.syncFromSupabase();
+    await Promise.all([
+      adminStore.syncFromCloud(),
+      adminStore.syncFromSupabase(),
+    ]);
     reloadData();
-    setTimeout(() => setSyncing(false), 600);
+    setTimeout(() => setSyncing(false), 500);
   };
 
   if (!mounted || !authed) {

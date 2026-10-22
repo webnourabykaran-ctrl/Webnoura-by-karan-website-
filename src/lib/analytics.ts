@@ -166,6 +166,15 @@ export const analyticsTracker = {
     }
 
     this.saveAnalytics(data);
+
+    // Push to global cloud database asynchronously
+    try {
+      import("./cloudStore").then(({ cloudStore }) => {
+        cloudStore.recordGlobalVisit(device);
+      });
+    } catch {
+      // Ignore background sync errors
+    }
   },
 
   // Track any click on button / link / CTA
@@ -189,6 +198,21 @@ export const analyticsTracker = {
 
     data.clicks = [newClick, ...(data.clicks || [])].slice(0, 150);
     this.saveAnalytics(data);
+
+    // Push to global cloud database asynchronously
+    try {
+      import("./cloudStore").then(({ cloudStore }) => {
+        cloudStore.recordGlobalClick(newClick);
+      });
+    } catch {
+      // Ignore background sync errors
+    }
+  },
+
+  // Update from cloud store (used by admin portal to reflect all visitors)
+  applyCloudAnalytics(cloudData: AnalyticsData): void {
+    if (typeof window === "undefined" || !cloudData) return;
+    this.saveAnalytics(cloudData);
   },
 
   resetAnalytics(): void {

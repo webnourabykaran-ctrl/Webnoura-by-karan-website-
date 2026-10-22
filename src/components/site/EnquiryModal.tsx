@@ -133,11 +133,23 @@ export function EnquiryModal() {
     });
 
     try {
+      const normalizedType = parsed.data.website_type.includes("Business")
+        ? "Business website"
+        : parsed.data.website_type.includes("Restaurant")
+        ? "Restaurant website"
+        : parsed.data.website_type.includes("Gym")
+        ? "Gym website"
+        : parsed.data.website_type.includes("Portfolio")
+        ? "Portfolio website"
+        : parsed.data.website_type.includes("Landing")
+        ? "Landing page"
+        : "Other";
+
       await supabase.from("enquiries").insert({
         name: parsed.data.name,
         email: parsed.data.email,
         business_name: parsed.data.business_name,
-        website_type: parsed.data.website_type,
+        website_type: normalizedType,
         pages: parsed.data.pages ?? null,
         budget: parsed.data.budget ?? null,
         details: parsed.data.details,
