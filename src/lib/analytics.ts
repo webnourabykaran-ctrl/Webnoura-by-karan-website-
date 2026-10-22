@@ -123,8 +123,12 @@ export const analyticsTracker = {
 
   saveAnalytics(data: AnalyticsData): void {
     if (typeof window === "undefined") return;
-    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
-    notifyAnalyticsChange();
+    try {
+      localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
+      notifyAnalyticsChange();
+    } catch {
+      // Ignore localStorage errors (e.g. private mode, quota exceeded)
+    }
   },
 
   // Record a page view / visit
@@ -206,8 +210,9 @@ export function initGlobalClickTracking(): void {
 
   // Listen to document clicks
   document.addEventListener("click", (e) => {
-    const target = e.target as HTMLElement | null;
-    if (!target) return;
+    try {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
 
     // Find closest anchor or button
     const element = target.closest("a, button, [role='button']") as HTMLElement | null;
@@ -301,6 +306,9 @@ export function initGlobalClickTracking(): void {
       const category: ClickEvent["category"] = isDemo ? "demo" : text.toLowerCase().includes("submit") || text.toLowerCase().includes("send") ? "contact" : "cta";
       analyticsTracker.trackClick(text.replace(/\s+/g, " "), category, href || undefined);
     }
+  } catch {
+    // Ignore any tracking errors so user interaction is never affected
+  }
   });
 }
 
