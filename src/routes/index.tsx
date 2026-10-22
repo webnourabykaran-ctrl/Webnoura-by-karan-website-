@@ -85,7 +85,7 @@ function Index() {
       <EnquiryModal />
       <WhatsAppFloat
         phoneNumber={settings.whatsapp || "919463737763"}
-        instagramUrl={settings.instagram || "https://www.instagram.com/webnoura.com_?psln=MWNhaTBoZ2NncXJxNA=="}
+        instagramUrl={settings.instagram || "https://www.instagram.com/webnoura.site?xtok=MWNhaTBoZ2NncXJxNA=="}
       />
     </MotionConfig>
   );

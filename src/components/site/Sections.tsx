@@ -35,7 +35,7 @@ import webnouraMobile from "@/assets/webnoura-mobile.png";
 export const CONTACT: { email: string | null; whatsapp: string | null; instagram: string | null } = {
   email: "webnourabykaran@gmail.com",
   whatsapp: "+91 94637 37763",
-  instagram: "https://www.instagram.com/webnoura.com_?psln=MWNhaTBoZ2NncXJxNA==",
+  instagram: "https://www.instagram.com/webnoura.site?xtok=MWNhaTBoZ2NncXJxNA==",
 };
 
 function Container({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -665,7 +665,7 @@ export function Contact() {
       Icon: MessageCircle,
       placeholder: "[YOUR WHATSAPP NUMBER]",
     },
-    { label: "VIEW INSTAGRAM", value: CONTACT.instagram ? "@webnoura.com_" : null, href: CONTACT.instagram, Icon: Instagram, placeholder: "[YOUR INSTAGRAM URL]" },
+    { label: "VIEW INSTAGRAM", value: CONTACT.instagram ? "@webnoura.site" : null, href: CONTACT.instagram, Icon: Instagram, placeholder: "[YOUR INSTAGRAM URL]" },
   ];
   return (
     <section id="contact" className="border-t border-border py-24 md:py-32">

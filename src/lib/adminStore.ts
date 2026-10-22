@@ -153,7 +153,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   tagline: "Creative Websites · Built with Purpose",
   email: "webnourabykaran@gmail.com",
   whatsapp: "+91 94637 37763",
-  instagram: "https://www.instagram.com/webnoura.com_?psln=MWNhaTBoZ2NncXJxNA==",
+  instagram: "https://www.instagram.com/webnoura.site?xtok=MWNhaTBoZ2NncXJxNA==",
   location: "Punjab, India",
   announcementActive: true,
   announcementText: "🚀 Special Offer: Premium Business Website at ₹4,999 · Limited Slots",
@@ -674,6 +674,10 @@ export const adminStore = {
       }
       if (!parsed.announcementText || parsed.announcementText.includes("Contact Karan now!")) {
         parsed.announcementText = DEFAULT_SETTINGS.announcementText;
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(parsed));
+      }
+      if (!parsed.instagram || parsed.instagram.includes("webnoura.com_")) {
+        parsed.instagram = DEFAULT_SETTINGS.instagram;
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(parsed));
       }
       return { ...DEFAULT_SETTINGS, ...parsed };

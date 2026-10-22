@@ -19,7 +19,7 @@ interface WhatsAppFloatProps {
 export function WhatsAppFloat({
   phoneNumber = DEFAULT_WHATSAPP_NUMBER,
   defaultMessage = DEFAULT_WHATSAPP_GREETING,
-  instagramUrl = "https://www.instagram.com/webnoura.com_?psln=MWNhaTBoZ2NncXJxNA==",
+  instagramUrl = "https://www.instagram.com/webnoura.site?xtok=MWNhaTBoZ2NncXJxNA==",
 }: WhatsAppFloatProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -98,7 +98,7 @@ export function WhatsAppFloat({
                 <Sparkles className="h-3 w-3 text-emerald-400" /> Fast Response
               </span>
               <span className="text-white/40">·</span>
-              <span className="text-[#F472B6]">@webnoura.com_</span>
+              <span className="text-[#F472B6]">@webnoura.site</span>
             </div>
           </motion.div>
         )}
