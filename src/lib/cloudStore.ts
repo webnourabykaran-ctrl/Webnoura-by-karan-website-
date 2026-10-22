@@ -1,4 +1,4 @@
-import { AdminEnquiry, AnalyticsData, ClickEvent, TriggerLog } from "@/types/admin";
+import { AdminEnquiry, AnalyticsData, ClickEvent, TriggerLog, AdminInvoice } from "@/types/admin";
 import { INITIAL_ANALYTICS, calculateWeeklyVisits, calculateMonthlyVisits } from "./analytics";
 
 // WebNoura Live Cloud Database backed by GitHub Gist (owned by webnourabykaran-ctrl)
@@ -15,6 +15,7 @@ export interface CloudDatabase {
   enquiries: AdminEnquiry[];
   analytics: AnalyticsData;
   triggers: TriggerLog[];
+  invoices?: AdminInvoice[];
   lastUpdated: string;
 }
 
@@ -22,6 +23,7 @@ const DEFAULT_CLOUD_DATA: CloudDatabase = {
   enquiries: [],
   analytics: INITIAL_ANALYTICS,
   triggers: [],
+  invoices: [],
   lastUpdated: new Date().toISOString(),
 };
 
@@ -50,6 +52,7 @@ export const cloudStore = {
           enquiries: Array.isArray(data.enquiries) ? data.enquiries : [],
           analytics: data.analytics && typeof data.analytics === "object" ? data.analytics : INITIAL_ANALYTICS,
           triggers: Array.isArray(data.triggers) ? data.triggers : [],
+          invoices: Array.isArray(data.invoices) ? data.invoices : [],
           lastUpdated: data.lastUpdated || new Date().toISOString(),
         };
         return cachedData;
@@ -79,6 +82,7 @@ export const cloudStore = {
         enquiries: Array.isArray(data.enquiries) ? data.enquiries : [],
         analytics: data.analytics && typeof data.analytics === "object" ? data.analytics : INITIAL_ANALYTICS,
         triggers: Array.isArray(data.triggers) ? data.triggers : [],
+        invoices: Array.isArray(data.invoices) ? data.invoices : [],
         lastUpdated: data.lastUpdated || new Date().toISOString(),
       };
       return cachedData;
@@ -235,6 +239,55 @@ export const cloudStore = {
       await this.pushCloudData(current);
     } catch (err) {
       console.warn("Cloud enquiry record error:", err);
+    }
+  },
+
+  /**
+   * Records or updates a client invoice immediately into the cloud database
+   */
+  async recordGlobalInvoice(invoice: AdminInvoice): Promise<void> {
+    try {
+      const current = (await this.fetchCloudData()) || cachedData || DEFAULT_CLOUD_DATA;
+      const existing = current.invoices || [];
+      const updatedList = [invoice, ...existing.filter((i) => i.id !== invoice.id)];
+      current.invoices = updatedList;
+
+      // Add automated trigger log for invoice creation or payment
+      const triggerEvent = invoice.payment_status === "paid" ? "payment_received" : "invoice_created";
+      const triggerMsg = invoice.payment_status === "paid"
+        ? `Full payment of ₹${invoice.total_amount.toLocaleString()} received for Invoice ${invoice.invoice_number} (${invoice.client_business || invoice.client_name}).`
+        : `Invoice ${invoice.invoice_number} created for ${invoice.client_business || invoice.client_name} (Total: ₹${invoice.total_amount.toLocaleString()}, Due: ₹${invoice.balance_due.toLocaleString()}).`;
+
+      const newTrigger: TriggerLog = {
+        id: "trg-" + Date.now().toString(36),
+        event: triggerEvent,
+        channel: "whatsapp",
+        recipient_name: invoice.client_name + (invoice.client_business ? ` (${invoice.client_business})` : ""),
+        recipient_contact: invoice.client_phone || invoice.client_email || "Client",
+        subject_or_preview: triggerMsg,
+        timestamp: new Date().toISOString(),
+        status: "delivered",
+      };
+      current.triggers = [newTrigger, ...(current.triggers || [])].slice(0, 100);
+
+      current.lastUpdated = new Date().toISOString();
+      await this.pushCloudData(current);
+    } catch (err) {
+      console.warn("Cloud invoice record error:", err);
+    }
+  },
+
+  /**
+   * Deletes an invoice from the cloud database
+   */
+  async deleteGlobalInvoice(id: string): Promise<void> {
+    try {
+      const current = (await this.fetchCloudData()) || cachedData || DEFAULT_CLOUD_DATA;
+      current.invoices = (current.invoices || []).filter((i) => i.id !== id);
+      current.lastUpdated = new Date().toISOString();
+      await this.pushCloudData(current);
+    } catch (err) {
+      console.warn("Cloud invoice delete error:", err);
     }
   },
 };

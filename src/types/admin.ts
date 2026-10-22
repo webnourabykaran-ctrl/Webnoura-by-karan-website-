@@ -139,7 +139,7 @@ export interface PromoCoupon {
 
 export interface TriggerLog {
   id: string;
-  event: "enquiry_received" | "client_onboarded" | "project_stage_update" | "coupon_applied" | "custom_alert" | "visitor_action";
+  event: "enquiry_received" | "client_onboarded" | "project_stage_update" | "coupon_applied" | "custom_alert" | "visitor_action" | "invoice_created" | "payment_received";
   channel: "whatsapp" | "email" | "sms" | "website";
   recipient_name: string;
   recipient_contact: string;
@@ -159,3 +159,47 @@ export interface ClientTestimonial {
   is_approved: boolean;
   avatar_url?: string;
 }
+
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  rate: number;
+  amount: number;
+}
+
+export type InvoicePaymentStatus = "paid" | "partial" | "pending" | "overdue";
+export type PaymentMethod = "upi" | "bank_transfer" | "cash" | "card" | "other";
+
+export interface AdminInvoice {
+  id: string;
+  invoice_number: string;
+  client_name: string;
+  client_business: string;
+  client_email?: string | undefined;
+  client_phone?: string | undefined;
+  client_address?: string | undefined;
+  client_gst?: string | undefined;
+
+  issue_date: string;
+  due_date: string;
+
+  items: InvoiceItem[];
+  subtotal: number;
+  discount_amount: number;
+  tax_amount: number;
+  total_amount: number;
+
+  amount_paid: number;
+  balance_due: number;
+  payment_status: InvoicePaymentStatus;
+  payment_method?: PaymentMethod | undefined;
+  transaction_id?: string | undefined;
+  paid_date?: string | undefined;
+
+  notes?: string | undefined;
+  terms?: string | undefined;
+  created_at: string;
+  updated_at: string;
+}
+

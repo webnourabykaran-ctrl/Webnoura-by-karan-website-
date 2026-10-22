@@ -21,7 +21,8 @@ import {
   Settings,
   ShieldCheck,
   Globe,
-  Tag
+  Tag,
+  Receipt,
 } from "lucide-react";
 import { AdminTab } from "../AdminSidebar";
 import { adminStore } from "@/lib/adminStore";
@@ -47,6 +48,7 @@ export function OverviewTab({
   // Settings & locked clients
   const settings = adminStore.getSettings();
   const lockedClients = useLockedClients();
+  const invoices = adminStore.getInvoices();
 
   // Visitor totals
   const totalVisits = analytics?.totalVisits || 0;
@@ -133,8 +135,8 @@ export function OverviewTab({
           </div>
         </div>
 
-        {/* 4 Big Direct Shortcut Cards */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 5 Big Direct Shortcut Cards */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {/* Card 1: Client Enquiries */}
           <div
             onClick={() => setActiveTab("enquiries")}
@@ -149,7 +151,7 @@ export function OverviewTab({
                   ? "bg-blue-500/20 text-blue-400 border border-blue-500/40 animate-pulse" 
                   : "bg-slate-500/20 text-slate-300"
               }`}>
-                {newLeads > 0 ? `${newLeads} ਨਵੇਂ ਮੈਸੇਜ` : `${totalLeads} ਕੁੱਲ ਲੀਡਸ`}
+                {newLeads > 0 ? `${newLeads} ਨਵੇਂ` : `${totalLeads} ਕੁੱਲ`}
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-[#93C5FD] transition-colors">
@@ -159,7 +161,7 @@ export function OverviewTab({
               ਨਵੇਂ ਫ਼ਾਰਮ ਵੇਖੋ, ਸਿੱਧਾ WhatsApp ਚੈਟ ਕਰੋ, ਜਾਂ ਕਲਾਇੰਟ ਟਾਈਮਰ ਬੰਦ ਕਰੋ।
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[#3B82F6] group-hover:text-white transition-colors">
-              <span>ਮੈਸੇਜ ਖੋਲ੍ਹੋ (Leads)</span>
+              <span>ਮੈਸੇਜ (Leads)</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -178,13 +180,13 @@ export function OverviewTab({
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-emerald-300 transition-colors">
-              2. ਵੈੱਬਸਾਈਟ ਵਿਜ਼ਿਟਰਸ
+              2. ਵਿਜ਼ਿਟਰਸ
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
               ਵੇਖੋ ਕਿੰਨੇ ਲੋਕ ਆਏ, ਕਿਹੜੇ ਸ਼ਹਿਰੋਂ ਦੇਖਿਆ ਅਤੇ ਕਿਹੜੇ ਬਟਨ ਦਬਾਏ।
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-emerald-400 group-hover:text-white transition-colors">
-              <span>ਵਿਜ਼ਿਟਰ ਵੇਖੋ (Traffic)</span>
+              <span>ਵਿਜ਼ਿਟਰ (Traffic)</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -199,22 +201,47 @@ export function OverviewTab({
                 <Kanban className="h-5 w-5" />
               </div>
               <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                {inPipeline} ਆਰਡਰ ਚਾਲੂ
+                {inPipeline} ਆਰਡਰ
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-amber-300 transition-colors">
-              3. ਚੱਲ ਰਹੇ ਪ੍ਰੋਜੈਕਟ
+              3. ਚੱਲ ਰਹੇ ਆਰਡਰ
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਜਿਹੜੀਆਂ ਵੈੱਬਸਾਈਟਾਂ ਬਣ ਰਹੀਆਂ ਹਨ, ਉਹਨਾਂ ਦਾ ਸਟੇਟਸ ਤੇ ਡੈੱਡਲਾਈਨ ਟਰੈਕ ਕਰੋ।
+              ਜਿਹੜੀਆਂ ਵੈੱਬਸਾਈਟਾਂ ਬਣ ਰਹੀਆਂ ਹਨ, ਉਹਨਾਂ ਦਾ ਸਟੇਟਸ ਟਰੈਕ ਕਰੋ।
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-amber-400 group-hover:text-white transition-colors">
-              <span>ਕੰਮ ਟਰੈਕ ਕਰੋ (Projects)</span>
+              <span>ਆਰਡਰ (Projects)</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
 
-          {/* Card 4: Website Settings */}
+          {/* Card 4: Invoices & Deals */}
+          <div
+            onClick={() => setActiveTab("invoices")}
+            className="group cursor-pointer rounded-2xl border border-[#1E4378] bg-[#061833]/80 hover:bg-[#0B2D5B] hover:border-cyan-500 p-5 transition-all duration-200 hover:-translate-y-1 shadow-lg"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 group-hover:scale-110 transition-transform">
+                <Receipt className="h-5 w-5" />
+              </div>
+              <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                {invoices.length} ਬਿੱਲ
+              </span>
+            </div>
+            <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-cyan-300 transition-colors">
+              4. ਬਿੱਲ ਤੇ ਪੇਮੈਂਟਸ
+            </h3>
+            <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
+              ਗਾਹਕਾਂ ਨੂੰ ਬਿੱਲ ਬਣਾ ਕੇ ਭੇਜੋ, ਪੇਮੈਂਟ ਰਿਕਾਰਡ ਕਰੋ ਤੇ WhatsApp 'ਤੇ ਸ਼ੇਅਰ ਕਰੋ।
+            </p>
+            <div className="mt-3 flex items-center gap-1 text-xs font-bold text-cyan-400 group-hover:text-white transition-colors">
+              <span>ਬਿੱਲ ਬਣਾਓ (Billing)</span>
+              <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </div>
+          </div>
+
+          {/* Card 5: Website Settings */}
           <div
             onClick={() => setActiveTab("settings")}
             className="group cursor-pointer rounded-2xl border border-[#1E4378] bg-[#061833]/80 hover:bg-[#0B2D5B] hover:border-purple-500 p-5 transition-all duration-200 hover:-translate-y-1 shadow-lg"
@@ -228,17 +255,17 @@ export function OverviewTab({
                   ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" 
                   : "bg-rose-500/20 text-rose-300 border-rose-500/40"
               }`}>
-                {settings.websiteOnline ? "ਵੈੱਬਸਾਈਟ LIVE" : "ਵੈੱਬਸਾਈਟ ਬੰਦ"}
+                {settings.websiteOnline ? "LIVE" : "OFF"}
               </span>
             </div>
             <h3 className="font-display font-bold text-base text-white mt-4 group-hover:text-purple-300 transition-colors">
-              4. ਸੈਟਿੰਗਸ & ਕੰਟਰੋਲ
+              5. ਸੈਟਿੰਗਸ & ਕੰਟਰੋਲ
             </h3>
             <p className="text-xs text-[#94A3B8] mt-1 line-clamp-2">
-              ਵੈੱਬਸਾਈਟ ਆਨ/ਆਫ਼ ਕਰੋ, ਨਵਾਂ ਆਫ਼ਰ ਲਗਾਓ ਜਾਂ ਐਡਮਿਨ ਪਾਸਵਰਡ ਬਦਲੋ।
+              ਵੈੱਬਸਾਈਟ ਆਨ/ਆਫ਼ ਕਰੋ, ਨਵਾਂ ਆਫ਼ਰ ਲਗਾਓ ਜਾਂ ਪਾਸਵਰਡ ਬਦਲੋ।
             </p>
             <div className="mt-3 flex items-center gap-1 text-xs font-bold text-purple-400 group-hover:text-white transition-colors">
-              <span>ਸੈਟਿੰਗਸ ਖੋਲ੍ਹੋ (Settings)</span>
+              <span>ਸੈਟਿੰਗਸ (Settings)</span>
               <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>

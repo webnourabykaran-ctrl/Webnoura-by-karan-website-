@@ -15,6 +15,7 @@ import { TestimonialsTab } from "@/components/admin/tabs/TestimonialsTab";
 import { PortfolioTab } from "@/components/admin/tabs/PortfolioTab";
 import { ServicesTab } from "@/components/admin/tabs/ServicesTab";
 import { SettingsTab } from "@/components/admin/tabs/SettingsTab";
+import { InvoicesTab } from "@/components/admin/tabs/InvoicesTab";
 import { AddLeadModal } from "@/components/admin/AddLeadModal";
 import {
   AdminEnquiry,
@@ -26,6 +27,7 @@ import {
   PromoCoupon,
   TriggerLog,
   ClientTestimonial,
+  AdminInvoice,
 } from "@/types/admin";
 
 export const Route = createFileRoute("/karan-portal")({
@@ -57,6 +59,7 @@ function AdminPage() {
   const [coupons, setCoupons] = useState<PromoCoupon[]>([]);
   const [triggers, setTriggers] = useState<TriggerLog[]>([]);
   const [testimonials, setTestimonials] = useState<ClientTestimonial[]>([]);
+  const [invoices, setInvoices] = useState<AdminInvoice[]>([]);
 
   const reloadData = () => {
     setEnquiries(adminStore.getEnquiries());
@@ -68,6 +71,7 @@ function AdminPage() {
     setCoupons(adminStore.getCoupons());
     setTriggers(adminStore.getTriggersLog());
     setTestimonials(adminStore.getTestimonials());
+    setInvoices(adminStore.getInvoices());
   };
 
   useEffect(() => {
@@ -123,6 +127,7 @@ function AdminPage() {
     analytics: "Website Visitors & Click Analytics",
     enquiries: "Client Enquiries & CRM",
     project_tracker: "Active Projects Production Pipeline",
+    invoices: "Client Invoices & Deals Billing",
     coupons: "Promo Codes & Discount Manager",
     triggers_log: "Automated Email & WhatsApp Triggers",
     testimonials: "Testimonials & Reviews Showcase",
@@ -186,6 +191,10 @@ function AdminPage() {
 
           {activeTab === "project_tracker" && (
             <ProjectTrackerTab projects={activeProjects} onRefresh={reloadData} />
+          )}
+
+          {activeTab === "invoices" && (
+            <InvoicesTab invoices={invoices} onRefresh={reloadData} onAddNewLead={() => setIsAddLeadOpen(true)} />
           )}
 
           {activeTab === "coupons" && (

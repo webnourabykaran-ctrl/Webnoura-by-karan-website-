@@ -9,6 +9,7 @@ import {
   PromoCoupon,
   TriggerLog,
   ClientTestimonial,
+  AdminInvoice,
 } from "@/types/admin";
 import { supabase } from "@/integrations/supabase/client";
 import { analyticsTracker } from "./analytics";
@@ -19,6 +20,7 @@ const SERVICES_KEY = "webnoura_admin_services";
 const SETTINGS_KEY = "webnoura_admin_settings";
 const AUTH_KEY = "webnoura_karan_admin_session";
 const ACTIVE_PROJECTS_KEY = "webnoura_admin_active_projects";
+const INVOICES_KEY = "webnoura_admin_invoices";
 const COUPONS_KEY = "webnoura_admin_coupons";
 const TRIGGERS_KEY = "webnoura_admin_triggers";
 const TESTIMONIALS_KEY = "webnoura_admin_testimonials";
@@ -166,6 +168,84 @@ export const DEFAULT_SETTINGS: SiteSettings = {
 };
 
 export const INITIAL_ACTIVE_PROJECTS: ActiveProject[] = [];
+
+export const INITIAL_INVOICES: AdminInvoice[] = [
+  {
+    id: "inv-01",
+    invoice_number: "WN-2026-001",
+    client_name: "Gurpreet Singh",
+    client_business: "Majha Café & Restaurant",
+    client_email: "majha.cafe@gmail.com",
+    client_phone: "+91 98765 43210",
+    client_address: "Mall Road, Amritsar, Punjab",
+    issue_date: "2026-10-18",
+    due_date: "2026-10-25",
+    items: [
+      {
+        id: "itm-01",
+        description: "Restaurant & Café Website Development (Digital Food Menu, Reservation Links, Cinematic Dining Showcase)",
+        quantity: 1,
+        rate: 4999,
+        amount: 4999,
+      },
+      {
+        id: "itm-02",
+        description: "High-Speed Cloud Hosting Setup, Domain Integration & Free SSL Certificate (1 Year)",
+        quantity: 1,
+        rate: 0,
+        amount: 0,
+      },
+    ],
+    subtotal: 4999,
+    discount_amount: 0,
+    tax_amount: 0,
+    total_amount: 4999,
+    amount_paid: 2500,
+    balance_due: 2499,
+    payment_status: "partial",
+    payment_method: "upi",
+    transaction_id: "UPI/529182049182",
+    paid_date: "2026-10-18",
+    notes: "50% advance received. Remaining balance of ₹2,499 payable upon final launch on custom domain.",
+    terms: "1. 1-year free hosting, support and SSL included. 2. Final domain handover after balance payment.",
+    created_at: "2026-10-18T10:00:00.000Z",
+    updated_at: "2026-10-18T10:00:00.000Z",
+  },
+  {
+    id: "inv-02",
+    invoice_number: "WN-2026-002",
+    client_name: "Rajesh Sharma",
+    client_business: "Gold Health Club & Gym",
+    client_email: "goldgym.pb@gmail.com",
+    client_phone: "+91 94172 88391",
+    client_address: "Model Town, Jalandhar, Punjab",
+    issue_date: "2026-10-15",
+    due_date: "2026-10-22",
+    items: [
+      {
+        id: "itm-03",
+        description: "Gym & Fitness Club Premium Website (Training Zones, Equipment Showcase, Lead Enquiry Form)",
+        quantity: 1,
+        rate: 4999,
+        amount: 4999,
+      },
+    ],
+    subtotal: 4999,
+    discount_amount: 0,
+    tax_amount: 0,
+    total_amount: 4999,
+    amount_paid: 4999,
+    balance_due: 0,
+    payment_status: "paid",
+    payment_method: "upi",
+    transaction_id: "UPI/839104819201",
+    paid_date: "2026-10-15",
+    notes: "Full payment received with thanks. Project completed and deployed live on Vercel.",
+    terms: "1. 1-year maintenance support included.",
+    created_at: "2026-10-15T12:30:00.000Z",
+    updated_at: "2026-10-15T12:30:00.000Z",
+  },
+];
 
 export const INITIAL_COUPONS: PromoCoupon[] = [];
 
@@ -481,6 +561,93 @@ export const adminStore = {
   deleteActiveProject(id: string): void {
     const list = this.getActiveProjects().filter((p) => p.id !== id);
     this.saveActiveProjects(list);
+  },
+
+  // --- INVOICES & CLIENT BILLING ---
+  getInvoices(): AdminInvoice[] {
+    if (typeof window === "undefined") return INITIAL_INVOICES;
+    try {
+      const raw = localStorage.getItem(INVOICES_KEY);
+      if (!raw) {
+        localStorage.setItem(INVOICES_KEY, JSON.stringify(INITIAL_INVOICES));
+        return INITIAL_INVOICES;
+      }
+      return JSON.parse(raw);
+    } catch {
+      return INITIAL_INVOICES;
+    }
+  },
+
+  saveInvoices(list: AdminInvoice[]): void {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(INVOICES_KEY, JSON.stringify(list));
+    notifyStoreUpdate("invoices");
+  },
+
+  addInvoice(invoice: Omit<AdminInvoice, "id" | "created_at" | "updated_at">): AdminInvoice {
+    const list = this.getInvoices();
+    const now = new Date().toISOString();
+    const newEntry: AdminInvoice = {
+      ...invoice,
+      id: "inv-" + Date.now().toString(36) + Math.random().toString(36).substring(2, 4),
+      created_at: now,
+      updated_at: now,
+    };
+    this.saveInvoices([newEntry, ...list]);
+
+    // Push to live cloud database immediately
+    try {
+      import("./cloudStore").then(({ cloudStore }) => {
+        cloudStore.recordGlobalInvoice(newEntry);
+      });
+    } catch {}
+
+    // Add trigger log
+    this.addTriggerLog({
+      event: newEntry.payment_status === "paid" ? "payment_received" : "invoice_created",
+      channel: "whatsapp",
+      recipient_name: newEntry.client_name + (newEntry.client_business ? ` (${newEntry.client_business})` : ""),
+      recipient_contact: newEntry.client_phone || newEntry.client_email || "Client",
+      subject_or_preview: `Invoice ${newEntry.invoice_number} created for ${newEntry.client_business || newEntry.client_name} (Total: ₹${newEntry.total_amount.toLocaleString("en-IN")}, Paid: ₹${newEntry.amount_paid.toLocaleString("en-IN")}, Balance: ₹${newEntry.balance_due.toLocaleString("en-IN")}).`,
+      status: "delivered",
+    });
+
+    return newEntry;
+  },
+
+  updateInvoice(id: string, updates: Partial<AdminInvoice>): AdminInvoice | null {
+    const list = this.getInvoices();
+    const idx = list.findIndex((i) => i.id === id);
+    const existing = list[idx];
+    if (idx === -1 || !existing) return null;
+    const updated: AdminInvoice = {
+      ...existing,
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
+    list[idx] = updated;
+    this.saveInvoices(list);
+
+    // Push updated invoice to cloud
+    try {
+      import("./cloudStore").then(({ cloudStore }) => {
+        cloudStore.recordGlobalInvoice(updated);
+      });
+    } catch {}
+
+    return updated;
+  },
+
+  deleteInvoice(id: string): void {
+    const list = this.getInvoices().filter((i) => i.id !== id);
+    this.saveInvoices(list);
+
+    // Delete from cloud
+    try {
+      import("./cloudStore").then(({ cloudStore }) => {
+        cloudStore.deleteGlobalInvoice(id);
+      });
+    } catch {}
   },
 
   // --- PROMO CODES & DISCOUNTS ---
@@ -821,6 +988,29 @@ export const adminStore = {
         this.saveTriggersLog(mergedTriggers.slice(0, 100));
       }
 
+      // 4. Sync Invoices
+      if (Array.isArray(cloud.invoices) && cloud.invoices.length > 0) {
+        const localInvoices = this.getInvoices();
+        const mergedInvoices = [...localInvoices];
+        let invoicesAddedOrUpdated = 0;
+        for (const remoteInv of cloud.invoices) {
+          const existingIdx = mergedInvoices.findIndex((i) => i.id === remoteInv.id || i.invoice_number === remoteInv.invoice_number);
+          if (existingIdx === -1) {
+            mergedInvoices.unshift(remoteInv);
+            invoicesAddedOrUpdated++;
+          } else {
+            const local = mergedInvoices[existingIdx];
+            if (new Date(remoteInv.updated_at) > new Date(local?.updated_at || 0)) {
+              mergedInvoices[existingIdx] = remoteInv;
+              invoicesAddedOrUpdated++;
+            }
+          }
+        }
+        if (invoicesAddedOrUpdated > 0 || localInvoices.length === 0) {
+          this.saveInvoices(mergedInvoices);
+        }
+      }
+
       notifyStoreUpdate("cloud_sync");
       return {
         enquiriesAdded,
@@ -838,6 +1028,10 @@ export const adminStore = {
       const storedVersion = localStorage.getItem(STORE_VERSION_KEY);
       if (storedVersion !== CURRENT_STORE_VERSION) {
         this.resetAllData();
+      } else {
+        if (!localStorage.getItem(INVOICES_KEY)) {
+          localStorage.setItem(INVOICES_KEY, JSON.stringify(INITIAL_INVOICES));
+        }
       }
     } catch (err) {
       console.warn("Store migration check error:", err);
@@ -884,6 +1078,7 @@ export const adminStore = {
       projects: this.getProjects(),
       services: this.getServices(),
       activeProjects: this.getActiveProjects(),
+      invoices: this.getInvoices(),
       coupons: this.getCoupons(),
       triggers: this.getTriggersLog(),
       testimonials: this.getTestimonials(),

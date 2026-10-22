@@ -9,6 +9,7 @@ import {
   Globe,
   MousePointerClick,
   Kanban,
+  Receipt,
   Tag,
   BellRing,
   Star,
@@ -21,6 +22,7 @@ export type AdminTab =
   | "analytics"
   | "enquiries"
   | "project_tracker"
+  | "invoices"
   | "coupons"
   | "triggers_log"
   | "testimonials"
@@ -60,6 +62,7 @@ export function AdminSidebar({
       category: "CLIENTS & PROJECTS (ਕੰਮ ਅਤੇ ਆਰਡਰ)",
       items: [
         { id: "project_tracker" as AdminTab, label: "Active Projects", sublabel: "ਚੱਲ ਰਹੇ ਆਰਡਰ · Pipeline Tracker", icon: Kanban },
+        { id: "invoices" as AdminTab, label: "Invoices & Deals", sublabel: "ਬਿੱਲ ਤੇ ਇਨਵੌਇਸ · Generate & Share PDF", icon: Receipt },
         { id: "coupons" as AdminTab, label: "Promo Codes", sublabel: "ਕੂਪਨ ਤੇ ਆਫ਼ਰ · Discounts & ₹4,999", icon: Tag },
         { id: "triggers_log" as AdminTab, label: "Notification Logs", sublabel: "ਮੈਸੇਜ ਰਿਕਾਰਡ · WhatsApp Triggers", icon: BellRing },
       ],

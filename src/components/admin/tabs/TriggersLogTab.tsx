@@ -60,6 +60,10 @@ export function TriggersLogTab({ logs, onRefresh }: TriggersLogTabProps) {
         return <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-amber-400">Coupon Used</span>;
       case "visitor_action":
         return <span className="rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-cyan-400">Visitor Action</span>;
+      case "invoice_created":
+        return <span className="rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-indigo-400">Invoice Created</span>;
+      case "payment_received":
+        return <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-mono font-bold text-emerald-400">Payment Received</span>;
       default:
         return <span className="rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 text-[10px] font-mono text-cyan-300">System Alert</span>;
     }
