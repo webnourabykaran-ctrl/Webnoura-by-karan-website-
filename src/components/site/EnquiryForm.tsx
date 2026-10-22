@@ -15,7 +15,7 @@ import {
   DEFAULT_WHATSAPP_GREETING,
 } from "@/lib/whatsapp";
 
-export const WEBSITE_TYPES = ["Business & hotel website", "Restaurant website", "Gym website", "Portfolio website", "Landing page", "E-commerce website", "Other"] as const;
+export const WEBSITE_TYPES = ["Business & hotel website", "Restaurant website", "Gym website", "Portfolio website", "Landing page", "Other"] as const;
 
 export const enquirySchema = z.object({
   name: z.string().trim().min(1, "Please enter your name").max(100),
