@@ -485,10 +485,10 @@ export function openPrintableInvoiceWindow(invoice: AdminInvoice): void {
     <div class="header">
       <div>
         <div class="brand-logo">
-          <div class="logo-badge">WN</div>
+          <img src="/logo.jpg" alt="WebNoura Logo" style="height: 52px; width: 52px; object-fit: contain; border-radius: 10px; border: 1px solid #cbd5e1; background: #ffffff; padding: 2px;" />
           <div>
             <div class="brand-title">WebNoura</div>
-            <div class="brand-subtitle">Creative Digital Studio · Karan</div>
+            <div class="brand-subtitle">Creative Digital Studio by Karan</div>
           </div>
         </div>
         <div class="studio-meta">

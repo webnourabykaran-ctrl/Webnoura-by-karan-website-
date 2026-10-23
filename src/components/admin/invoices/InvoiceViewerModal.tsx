@@ -311,20 +311,29 @@ _Thank you for choosing WebNoura!_`;
             >
               {/* Studio Info */}
               <div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white font-display font-extrabold text-xl shadow-md">
-                    WN
+                <div className="flex items-center gap-3.5">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white border border-slate-200 p-1 shadow-sm overflow-hidden">
+                    <img
+                      src="/logo.jpg"
+                      alt="WebNoura Logo"
+                      className="h-full w-full object-contain"
+                    />
                   </div>
                   <div>
-                    <h1
-                      className={`font-display text-2xl font-black uppercase tracking-tight ${
-                        paperTheme === "light" ? "text-slate-950" : "text-white"
-                      }`}
-                    >
-                      WebNoura
-                    </h1>
+                    <div className="flex items-center gap-2">
+                      <h1
+                        className={`font-display text-2xl font-black uppercase tracking-tight ${
+                          paperTheme === "light" ? "text-slate-950" : "text-white"
+                        }`}
+                      >
+                        WebNoura
+                      </h1>
+                      <span className="rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono font-bold text-blue-500 uppercase">
+                        Studio
+                      </span>
+                    </div>
                     <p className="text-[11px] font-bold uppercase tracking-wider text-blue-600">
-                      Creative Digital Studio · Karan
+                      Creative Digital Studio by Karan
                     </p>
                   </div>
                 </div>
