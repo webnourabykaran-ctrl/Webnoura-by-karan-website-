@@ -47,12 +47,12 @@ export function InvoiceViewerModal({
   if (!isOpen || !invoice) return null;
 
   const upiLink = getUpiPaymentUrl(
-    "9463737763@upi",
-    "WebNoura by Karan",
+    "deepkaran4500@okaxis",
+    "Deep Karan",
     invoice.balance_due > 0 ? invoice.balance_due : invoice.total_amount,
     invoice.invoice_number
   );
-  const qrUrl = getUpiQrImageUrl(upiLink);
+  const qrUrl = "/karan-gpay-qr.png";
   const amountWords = numberToWordsIndian(invoice.total_amount);
 
   const handlePrint = () => {
@@ -100,9 +100,10 @@ ${itemsSummary}
 ${invoice.transaction_id ? `*Transaction / UTR:* ${invoice.transaction_id}\n` : ""}${invoice.payment_method ? `*Payment Mode:* ${invoice.payment_method.toUpperCase()}\n` : ""}
 ${
   invoice.balance_due > 0
-    ? `📲 *Direct Payment Options (GPay / PhonePe / Paytm / UPI):*
-*UPI ID:* 9463737763@upi
-*Mobile:* +91 94637 37763 (Karan)
+    ? `📲 *Direct Payment Options (Google Pay / PhonePe / Paytm / UPI):*
+*UPI ID:* deepkaran4500@okaxis
+*Payee Name:* Deep Karan (Bank of Maharashtra 5276)
+*WhatsApp / Mobile:* +91 94637 37763
 `
     : ""
 }────────────────────────────
@@ -723,10 +724,10 @@ _Thank you for choosing WebNoura!_`;
             {/* Direct UPI Scannable Payment Box (When Balance > 0) */}
             {invoice.balance_due > 0 && (
               <div
-                className={`rounded-xl p-4 sm:p-5 my-6 border flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                className={`rounded-2xl p-4 sm:p-5 my-6 border flex flex-col sm:flex-row items-center justify-between gap-5 shadow-sm ${
                   paperTheme === "light"
-                    ? "bg-emerald-50/70 border-emerald-300 text-emerald-950"
-                    : "bg-emerald-950/20 border-emerald-500/30 text-emerald-100"
+                    ? "bg-emerald-50/80 border-emerald-300 text-emerald-950"
+                    : "bg-emerald-950/30 border-emerald-500/40 text-emerald-100"
                 }`}
               >
                 <div className="flex-1">
@@ -734,28 +735,34 @@ _Thank you for choosing WebNoura!_`;
                     <CreditCard className="h-4 w-4 text-emerald-600" />
                     <span>How to Pay Remaining Balance (ਬਾਕੀ ਰਕਮ ਕਿਵੇਂ ਜਮ੍ਹਾ ਕਰਵਾਉਣੀ ਹੈ):</span>
                   </div>
-                  <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1">
-                    Scan the QR code with any UPI App (Google Pay, PhonePe, Paytm, BHIM) to pay the balance of{" "}
-                    <strong>{formatINR(invoice.balance_due)}</strong> directly.
+                  <p className="text-xs text-emerald-700 dark:text-emerald-300 mt-1.5 leading-relaxed">
+                    Scan the official Google Pay QR code below with any UPI App (Google Pay, PhonePe, Paytm, BHIM) to pay the balance of{" "}
+                    <strong className="underline underline-offset-2">{formatINR(invoice.balance_due)}</strong> directly to Deep Karan.
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="rounded-lg bg-white px-3 py-1.5 text-xs font-mono font-bold text-emerald-900 border border-emerald-300 shadow-sm">
-                      UPI ID: 9463737763@upi
+                    <span className="rounded-xl bg-white dark:bg-emerald-900/60 px-3 py-1.5 text-xs font-mono font-bold text-emerald-900 dark:text-emerald-200 border border-emerald-300 shadow-sm flex items-center gap-1.5">
+                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">UPI ID:</span>
+                      <strong className="text-emerald-800 dark:text-emerald-100">deepkaran4500@okaxis</strong>
                     </span>
-                    <span className="text-xs text-emerald-700">
-                      or WhatsApp / Mobile: +91 94637 37763
+                    <span className="rounded-xl bg-white/90 dark:bg-emerald-900/40 px-3 py-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-200 border border-emerald-300 shadow-sm">
+                      Deep Karan · Bank of Maharashtra 5276
+                    </span>
+                    <span className="text-xs text-emerald-700 dark:text-emerald-400">
+                      WhatsApp: +91 94637 37763
                     </span>
                   </div>
                 </div>
 
-                <div className="shrink-0 text-center">
-                  <img
-                    src={qrUrl}
-                    alt="Scan UPI QR Code"
-                    className="h-24 w-24 rounded-lg bg-white p-1 border border-emerald-300 shadow-sm"
-                  />
-                  <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 mt-1 block uppercase tracking-wider">
-                    Scan to Pay
+                <div className="shrink-0 flex flex-col items-center text-center">
+                  <div className="rounded-2xl bg-white p-2 border-2 border-emerald-400 shadow-md">
+                    <img
+                      src="/karan-gpay-qr.png"
+                      alt="Deep Karan Google Pay UPI QR Scanner"
+                      className="h-28 w-28 sm:h-32 sm:w-32 object-contain rounded-lg"
+                    />
+                  </div>
+                  <span className="text-[10px] font-extrabold text-emerald-800 dark:text-emerald-300 mt-1.5 block uppercase tracking-wider">
+                    Scan with Any UPI App
                   </span>
                 </div>
               </div>

@@ -84,8 +84,8 @@ export function formatINR(amount: number): string {
  * Generates UPI deep link
  */
 export function getUpiPaymentUrl(
-  pa: string = "9463737763@upi",
-  pn: string = "WebNoura by Karan",
+  pa: string = "deepkaran4500@okaxis",
+  pn: string = "Deep Karan",
   amount: number,
   invoiceNum: string
 ): string {
@@ -97,7 +97,7 @@ export function getUpiPaymentUrl(
  * Generates URL for QR code image from UPI URL
  */
 export function getUpiQrImageUrl(upiUrl: string): string {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(upiUrl)}`;
+  return `/karan-gpay-qr.png`;
 }
 
 /**
@@ -112,8 +112,8 @@ export function openPrintableInvoiceWindow(invoice: AdminInvoice): void {
     return;
   }
 
-  const upiLink = getUpiPaymentUrl("9463737763@upi", "WebNoura by Karan", invoice.balance_due > 0 ? invoice.balance_due : invoice.total_amount, invoice.invoice_number);
-  const qrUrl = getUpiQrImageUrl(upiLink);
+  const upiLink = getUpiPaymentUrl("deepkaran4500@okaxis", "Deep Karan", invoice.balance_due > 0 ? invoice.balance_due : invoice.total_amount, invoice.invoice_number);
+  const qrUrl = "/karan-gpay-qr.png";
   const words = numberToWordsIndian(invoice.total_amount);
 
   const html = `<!DOCTYPE html>
@@ -653,13 +653,13 @@ export function openPrintableInvoiceWindow(invoice: AdminInvoice): void {
       <div class="pay-info">
         <div class="pay-title">Direct UPI & Bank Payment Options</div>
         <div>Pay balance of <strong>₹${invoice.balance_due.toLocaleString("en-IN")}</strong> via Google Pay / PhonePe / Paytm / BHIM:</div>
-        <div style="margin-top: 4px;">UPI ID: <strong style="font-family: monospace; font-size: 13px; color: #14532d;">9463737763@upi</strong> (Karan)</div>
+        <div style="margin-top: 4px;">UPI ID: <strong style="font-family: monospace; font-size: 13px; color: #14532d;">deepkaran4500@okaxis</strong> (Deep Karan · Bank of Maharashtra 5276)</div>
         <div>WhatsApp / GPay Number: <strong>+91 94637 37763</strong></div>
         <div style="font-size: 10px; color: #15803d; margin-top: 2px;">Please share screenshot of UTR after transaction for instant confirmation.</div>
       </div>
       <div class="qr-container">
-        <img src="${qrUrl}" alt="UPI QR Code" />
-        <div class="qr-caption">Scan to Pay Exact Balance</div>
+        <img src="/karan-gpay-qr.png" alt="Google Pay QR Code" style="width: 105px; height: 105px; object-fit: contain; border-radius: 8px; border: 1px solid #86efac; background: #ffffff; padding: 2px;" />
+        <div class="qr-caption">Scan with any UPI App</div>
       </div>
     </div>`
         : ""
@@ -698,8 +698,8 @@ export function openPrintableInvoiceWindow(invoice: AdminInvoice): void {
  * Downloads a self-contained offline HTML file of the invoice.
  */
 export function downloadInvoiceHtml(invoice: AdminInvoice): void {
-  const upiLink = getUpiPaymentUrl("9463737763@upi", "WebNoura by Karan", invoice.balance_due > 0 ? invoice.balance_due : invoice.total_amount, invoice.invoice_number);
-  const qrUrl = getUpiQrImageUrl(upiLink);
+  const upiLink = getUpiPaymentUrl("deepkaran4500@okaxis", "Deep Karan", invoice.balance_due > 0 ? invoice.balance_due : invoice.total_amount, invoice.invoice_number);
+  const qrUrl = "/karan-gpay-qr.png";
   const words = numberToWordsIndian(invoice.total_amount);
 
   const html = `<!DOCTYPE html>
@@ -727,7 +727,7 @@ export function downloadInvoiceHtml(invoice: AdminInvoice): void {
         ${invoice.items.map(it => `<tr><td>${it.description}</td><td>${it.quantity}</td><td>₹${it.rate.toLocaleString("en-IN")}</td><td>₹${it.amount.toLocaleString("en-IN")}</td></tr>`).join("")}
       </tbody>
     </table>
-    <p>Payment via UPI: <strong>9463737763@upi</strong> (Phone: +91 94637 37763)</p>
+    <p>Payment via UPI: <strong>deepkaran4500@okaxis</strong> (Deep Karan · Bank of Maharashtra 5276 · Phone: +91 94637 37763)</p>
   </div>
 </body>
 </html>`;
