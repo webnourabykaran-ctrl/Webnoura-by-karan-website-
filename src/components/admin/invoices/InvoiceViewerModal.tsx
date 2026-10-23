@@ -281,36 +281,14 @@ _Thank you for choosing WebNoura!_`;
                 : "bg-[#0A2548] text-white border border-[#1E4378]"
             }`}
           >
-            {/* Rubber Stamp Graphic */}
+            {/* Header: Studio Brand, Stamp & Invoice Meta */}
             <div
-              className={`absolute top-24 sm:top-20 right-6 sm:right-10 pointer-events-none select-none rounded-lg border-2 sm:border-[3px] border-dashed px-3 py-1.5 sm:px-4 sm:py-2 text-center font-mono font-black uppercase tracking-widest text-[11px] sm:text-xs rotate-[-7deg] opacity-90 shadow-sm ${
-                invoice.payment_status === "paid"
-                  ? "border-emerald-600 text-emerald-700 bg-emerald-50/70"
-                  : invoice.payment_status === "partial"
-                  ? "border-amber-600 text-amber-700 bg-amber-50/70"
-                  : "border-rose-600 text-rose-700 bg-rose-50/70"
-              }`}
-            >
-              <div>
-                {invoice.payment_status === "paid"
-                  ? "PAID IN FULL"
-                  : invoice.payment_status === "partial"
-                  ? "PARTIAL ADVANCE"
-                  : "PAYMENT DUE"}
-              </div>
-              <div className="text-[8px] sm:text-[9px] tracking-normal font-sans opacity-80">
-                WEBNOURA VERIFIED
-              </div>
-            </div>
-
-            {/* Header: Studio Brand & Invoice Meta */}
-            <div
-              className={`flex flex-col sm:flex-row items-start justify-between gap-6 pb-6 border-b ${
+              className={`flex flex-col md:flex-row items-center md:items-start justify-between gap-6 pb-6 border-b ${
                 paperTheme === "light" ? "border-slate-300" : "border-[#1E4378]"
               }`}
             >
               {/* Studio Info */}
-              <div>
+              <div className="w-full md:w-auto flex-1 max-w-sm">
                 <div className="flex items-center gap-3.5">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white border border-slate-200 p-1 shadow-sm overflow-hidden">
                     <img
@@ -361,8 +339,49 @@ _Thank you for choosing WebNoura!_`;
                 </div>
               </div>
 
+              {/* Official Rubber Stamp Seal (Centered, Non-overlapping) */}
+              <div className="shrink-0 self-center md:self-start my-2 md:my-0 flex flex-col items-center justify-center">
+                <div
+                  className={`pointer-events-none select-none rounded-xl border-2 border-dashed px-4 py-2 sm:px-5 sm:py-2.5 text-center font-mono uppercase tracking-wider rotate-[-5deg] transition-transform shadow-sm ${
+                    paperTheme === "light"
+                      ? invoice.payment_status === "paid"
+                        ? "border-emerald-600 text-emerald-800 bg-emerald-50/90 ring-2 ring-emerald-600/30 shadow-emerald-500/10"
+                        : invoice.payment_status === "partial"
+                        ? "border-amber-600 text-amber-800 bg-amber-50/90 ring-2 ring-amber-600/30 shadow-amber-500/10"
+                        : "border-rose-600 text-rose-800 bg-rose-50/90 ring-2 ring-rose-600/30 shadow-rose-500/10"
+                      : invoice.payment_status === "paid"
+                      ? "border-emerald-400 text-emerald-300 bg-emerald-500/10 ring-2 ring-emerald-400/40 shadow-emerald-500/20"
+                      : invoice.payment_status === "partial"
+                      ? "border-amber-400 text-amber-300 bg-amber-500/10 ring-2 ring-amber-400/40 shadow-amber-500/20"
+                      : "border-rose-400 text-rose-300 bg-rose-500/10 ring-2 ring-rose-400/40 shadow-rose-500/20"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-1.5 text-[9px] font-black tracking-widest opacity-80">
+                    <span>★</span>
+                    <span>WEBNOURA STUDIO</span>
+                    <span>★</span>
+                  </div>
+                  <div className="text-xs sm:text-sm font-black tracking-widest my-0.5">
+                    {invoice.payment_status === "paid"
+                      ? "PAID IN FULL"
+                      : invoice.payment_status === "partial"
+                      ? "PARTIAL ADVANCE"
+                      : "PAYMENT DUE"}
+                  </div>
+                  <div className="text-[8px] sm:text-[9px] tracking-normal font-sans opacity-90 font-bold">
+                    {invoice.payment_status === "paid"
+                      ? invoice.paid_date
+                        ? `SETTLED ON ${invoice.paid_date}`
+                        : "VERIFIED & SETTLED"
+                      : invoice.payment_status === "partial"
+                      ? `ADV: ${formatINR(invoice.amount_paid)} · BAL: ${formatINR(invoice.balance_due)}`
+                      : "ACTION REQUIRED"}
+                  </div>
+                </div>
+              </div>
+
               {/* Invoice Numbers & Dates */}
-              <div className="sm:text-right pt-2 sm:pt-0">
+              <div className="w-full md:w-auto text-left md:text-right pt-2 md:pt-0 shrink-0">
                 <span
                   className={`inline-block rounded-full px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest ${
                     paperTheme === "light"

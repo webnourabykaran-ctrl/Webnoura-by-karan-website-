@@ -448,42 +448,48 @@ export function openPrintableInvoiceWindow(invoice: AdminInvoice): void {
       font-size: 10px;
       color: #64748b;
     }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0f2744;
+      padding-bottom: 20px;
+      gap: 16px;
+    }
     .stamp-seal {
-      position: absolute;
-      top: 160px;
-      right: 40px;
-      border: 3px dashed ${invoice.payment_status === "paid" ? "#059669" : "#d97706"};
-      color: ${invoice.payment_status === "paid" ? "#059669" : "#d97706"};
-      padding: 8px 18px;
-      font-size: 14px;
+      align-self: center;
+      border: 2px dashed ${invoice.payment_status === "paid" ? "#059669" : invoice.payment_status === "partial" ? "#d97706" : "#dc2626"};
+      color: ${invoice.payment_status === "paid" ? "#047857" : invoice.payment_status === "partial" ? "#b45309" : "#b91c1c"};
+      background: ${invoice.payment_status === "paid" ? "rgba(5, 150, 105, 0.06)" : invoice.payment_status === "partial" ? "rgba(217, 119, 6, 0.06)" : "rgba(220, 38, 38, 0.06)"};
+      padding: 6px 16px;
+      font-size: 13px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       border-radius: 8px;
-      transform: rotate(-8deg);
-      opacity: 0.85;
-      pointer-events: none;
+      transform: rotate(-5deg);
       text-align: center;
-      line-height: 1.2;
+      line-height: 1.25;
+      box-shadow: 0 0 0 2px ${invoice.payment_status === "paid" ? "rgba(5, 150, 105, 0.25)" : invoice.payment_status === "partial" ? "rgba(217, 119, 6, 0.25)" : "rgba(220, 38, 38, 0.25)"};
+      margin: 0 12px;
+      font-family: monospace;
     }
-    .stamp-seal span {
+    .stamp-seal .sub {
       display: block;
-      font-size: 9px;
+      font-size: 8px;
       letter-spacing: 1px;
       margin-top: 2px;
+      opacity: 0.9;
+      font-weight: 700;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
   </style>
 </head>
 <body>
   <div class="invoice-wrapper">
-    <div class="stamp-seal">
-      ${invoice.payment_status === "paid" ? "PAID IN FULL" : invoice.payment_status === "partial" ? "PARTIAL ADVANCE" : "PAYMENT DUE"}
-      <span>WEBNOURA VERIFIED</span>
-    </div>
-
     <!-- Header -->
     <div class="header">
-      <div>
+      <div style="flex: 1; max-width: 380px;">
         <div class="brand-logo">
           <img src="/logo.jpg" alt="WebNoura Logo" style="height: 52px; width: 52px; object-fit: contain; border-radius: 10px; border: 1px solid #cbd5e1; background: #ffffff; padding: 2px;" />
           <div>
@@ -497,6 +503,12 @@ export function openPrintableInvoiceWindow(invoice: AdminInvoice): void {
           <div>Punjab, India · Place of Supply: <strong>Punjab (03)</strong></div>
           <div>Service SAC Code: <strong>998314</strong> (Information Technology & Web Design)</div>
         </div>
+      </div>
+
+      <div class="stamp-seal">
+        <div style="font-size: 8px; letter-spacing: 1.5px; opacity: 0.85;">★ WEBNOURA STUDIO ★</div>
+        <div>${invoice.payment_status === "paid" ? "PAID IN FULL" : invoice.payment_status === "partial" ? "PARTIAL ADVANCE" : "PAYMENT DUE"}</div>
+        <span class="sub">${invoice.payment_status === "paid" ? (invoice.paid_date ? `SETTLED ON ${invoice.paid_date}` : "VERIFIED & SETTLED") : invoice.payment_status === "partial" ? `BAL DUE: ₹${invoice.balance_due.toLocaleString("en-IN")}` : "ACTION REQUIRED"}</span>
       </div>
 
       <div class="invoice-meta">
