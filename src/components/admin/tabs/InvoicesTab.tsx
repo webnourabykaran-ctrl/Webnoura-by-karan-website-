@@ -23,10 +23,11 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { AdminInvoice, InvoicePaymentStatus } from "@/types/admin";
-import { adminStore } from "@/lib/adminStore";
+import { adminStore, INITIAL_INVOICES } from "@/lib/adminStore";
 import { InvoiceModal } from "../invoices/InvoiceModal";
 import { InvoiceViewerModal } from "../invoices/InvoiceViewerModal";
 import { useAdminLanguage } from "@/lib/adminLanguage";
+import { openPrintableInvoiceWindow } from "@/lib/invoiceUtils";
 
 interface InvoicesTabProps {
   invoices: AdminInvoice[];
@@ -142,16 +143,35 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
             </div>
           </div>
 
-          <button
-            onClick={() => {
-              setEditingInvoice(null);
-              setIsCreateOpen(true);
-            }}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02]"
-          >
-            <Plus className="h-4 w-4" />
-            <span>{t.createInvoiceBtn}</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => {
+                const demo = INITIAL_INVOICES[0];
+                const list = adminStore.getInvoices();
+                if (!list.some((i) => i.invoice_number === demo.invoice_number)) {
+                  adminStore.saveInvoices([demo, ...list]);
+                }
+                onRefresh();
+                setViewingInvoice(demo);
+              }}
+              className="flex items-center justify-center gap-1.5 rounded-2xl border border-cyan-400/40 bg-cyan-500/10 hover:bg-cyan-500/20 px-4 py-3 text-xs font-bold text-cyan-300 transition-all hover:scale-[1.02]"
+              title="View or load demo hotel invoice"
+            >
+              <Sparkles className="h-4 w-4 text-cyan-300" />
+              <span>{language === "pa" ? "ਡੈਮੋ ਬਿੱਲ ਦੇਖੋ (WN-2026-003)" : "View Demo Invoice"}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setEditingInvoice(null);
+                setIsCreateOpen(true);
+              }}
+              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02]"
+            >
+              <Plus className="h-4 w-4" />
+              <span>{t.createInvoiceBtn}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -415,6 +435,15 @@ export function InvoicesTab({ invoices, onRefresh, onAddNewLead }: InvoicesTabPr
                     >
                       <Send className="h-3.5 w-3.5" />
                       <span>{t.sendWhatsApp}</span>
+                    </button>
+
+                    <button
+                      onClick={() => openPrintableInvoiceWindow(inv)}
+                      className="flex items-center gap-1.5 rounded-xl border border-[#1E4378] bg-[#061833] hover:bg-[#0B2D5B] px-2.5 py-1.5 text-xs text-[#94A3B8] hover:text-white transition-colors"
+                      title="Instant Print / PDF"
+                    >
+                      <Printer className="h-3.5 w-3.5 text-cyan-400" />
+                      <span className="hidden sm:inline">Print</span>
                     </button>
                   </div>
 

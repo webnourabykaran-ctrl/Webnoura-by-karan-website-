@@ -171,6 +171,55 @@ export const INITIAL_ACTIVE_PROJECTS: ActiveProject[] = [];
 
 export const INITIAL_INVOICES: AdminInvoice[] = [
   {
+    id: "inv-demo-crown",
+    invoice_number: "WN-2026-003",
+    client_name: "Harpreet Singh (Executive Director)",
+    client_business: "Royal Crown Luxury Hotel & Banquet",
+    client_email: "royalcrown.amritsar@gmail.com",
+    client_phone: "+91 98888 12345",
+    client_address: "GT Road, Near Golden Temple Corridor, Amritsar, Punjab - 143001",
+    client_gst: "03AABCR1234F1Z9",
+    issue_date: "2026-10-23",
+    due_date: "2026-10-30",
+    items: [
+      {
+        id: "itm-demo-01",
+        description: "Luxury Hotel & Banquet Premium Website (Room Suite Showcase, Table & Event Booking System, Virtual Tour)",
+        quantity: 1,
+        rate: 7999,
+        amount: 7999,
+      },
+      {
+        id: "itm-demo-02",
+        description: "High-Speed Cloud Hosting, Global CDN, SSL Setup & Custom Domain Configuration (1 Year)",
+        quantity: 1,
+        rate: 1499,
+        amount: 1499,
+      },
+      {
+        id: "itm-demo-03",
+        description: "Google Business Profile, Google Maps Verification & Local SEO Optimization (Amritsar)",
+        quantity: 1,
+        rate: 1999,
+        amount: 1999,
+      },
+    ],
+    subtotal: 11497,
+    discount_amount: 1498,
+    tax_amount: 1800,
+    total_amount: 11799,
+    amount_paid: 6000,
+    balance_due: 5799,
+    payment_status: "partial",
+    payment_method: "upi",
+    transaction_id: "UPI/629104810283",
+    paid_date: "2026-10-23",
+    notes: "₹6,000 advance received via PhonePe/UPI. Remaining balance of ₹5,799 payable upon final domain deployment and client review.",
+    terms: "1. 1-Year High-Speed Cloud Hosting, Free SSL & 30-Day Post-Launch Technical Support included.\n2. Full source code, CMS login credentials and domain ownership handed over upon balance clearance.",
+    created_at: "2026-10-23T10:00:00.000Z",
+    updated_at: "2026-10-23T10:00:00.000Z",
+  },
+  {
     id: "inv-01",
     invoice_number: "WN-2026-001",
     client_name: "Gurpreet Singh",
@@ -572,7 +621,18 @@ export const adminStore = {
         localStorage.setItem(INVOICES_KEY, JSON.stringify(INITIAL_INVOICES));
         return INITIAL_INVOICES;
       }
-      return JSON.parse(raw);
+      const list: AdminInvoice[] = JSON.parse(raw);
+      let updated = false;
+      for (const demo of INITIAL_INVOICES) {
+        if (!list.some((i) => i.invoice_number === demo.invoice_number)) {
+          list.unshift(demo);
+          updated = true;
+        }
+      }
+      if (updated) {
+        localStorage.setItem(INVOICES_KEY, JSON.stringify(list));
+      }
+      return list;
     } catch {
       return INITIAL_INVOICES;
     }
