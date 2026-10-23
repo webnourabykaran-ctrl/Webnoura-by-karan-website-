@@ -66,15 +66,57 @@ export function getDailyActivityHistory(
   return result;
 }
 
-function getDeviceType(): "desktop" | "mobile" | "tablet" {
-  if (typeof window === "undefined") return "desktop";
-  const ua = navigator.userAgent.toLowerCase();
-  if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+export function getDeviceType(): "desktop" | "mobile" | "tablet" {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return "desktop";
+
+  const ua = (navigator.userAgent || navigator.vendor || (window as any).opera || "").toLowerCase();
+
+  // 1. Tablet check (iPads, Android tablets, Silk, PlayBook)
+  const isTabletUA = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua);
+  const isIPadOS =
+    ua.includes("macintosh") &&
+    typeof navigator.maxTouchPoints === "number" &&
+    navigator.maxTouchPoints > 1;
+  if (isTabletUA || isIPadOS) {
     return "tablet";
   }
-  if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+
+  // 2. Mobile User-Agent check (case-insensitive flag /i and comprehensive mobile device patterns)
+  const isMobileUA =
+    /mobile|iphone|ipod|android|blackberry|iemobile|kindle|silk-accelerated|hpwos|webos|opera mini|opera mobi|windows phone|ucbrowser|samsungbrowser/i.test(
+      ua
+    );
+  if (isMobileUA) {
     return "mobile";
   }
+
+  // 3. Robust Viewport & Touch Fallback for modern mobile browsers & in-app webviews
+  try {
+    const screenWidth = Math.min(
+      window.innerWidth || 9999,
+      window.screen?.width || 9999
+    );
+    const hasTouch =
+      "ontouchstart" in window ||
+      (typeof navigator.maxTouchPoints === "number" && navigator.maxTouchPoints > 0);
+
+    // Phones (screenWidth <= 768px with touch capability)
+    if (screenWidth <= 768 && hasTouch) {
+      return "mobile";
+    }
+
+    if (screenWidth <= 640) {
+      return "mobile";
+    }
+
+    // Tablets (screenWidth <= 1024px with touch capability)
+    if (screenWidth <= 1024 && hasTouch) {
+      return "tablet";
+    }
+  } catch {
+    // Ignore window errors
+  }
+
   return "desktop";
 }
 
@@ -132,8 +174,15 @@ export const analyticsTracker = {
   },
 
   // Record a page view / visit
-  recordVisit(): void {
+  recordVisit(force: boolean = false): void {
     if (typeof window === "undefined") return;
+
+    // Ignore admin portal visits unless explicitly triggered (e.g. test button)
+    if (!force) {
+      const path = (window.location.pathname || "").toLowerCase();
+      if (path.startsWith("/karan-portal") || path.startsWith("/admin")) return;
+    }
+
     const data = this.getAnalytics();
     const today = new Date().toISOString().slice(0, 10);
     const device = getDeviceType();
@@ -180,6 +229,8 @@ export const analyticsTracker = {
   // Track any click on button / link / CTA
   trackClick(name: string, category: ClickEvent["category"] = "cta", target?: string): void {
     if (typeof window === "undefined" || !name) return;
+    const currentPath = (window.location.pathname || "").toLowerCase();
+    if (currentPath.startsWith("/karan-portal") || currentPath.startsWith("/admin")) return;
     const data = this.getAnalytics();
     const device = getDeviceType();
 
@@ -243,7 +294,8 @@ export function initGlobalClickTracking(): void {
     if (!element) return;
 
     // Ignore admin panel internal buttons to keep clean website analytics
-    if (window.location.pathname.startsWith("/admin")) return;
+    const currentPath = window.location.pathname.toLowerCase();
+    if (currentPath.startsWith("/admin") || currentPath.startsWith("/karan-portal")) return;
 
     // Check explicit track attribute
     const explicitName = element.getAttribute("data-track-name");

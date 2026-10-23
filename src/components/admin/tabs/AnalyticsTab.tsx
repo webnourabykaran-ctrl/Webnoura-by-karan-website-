@@ -210,7 +210,7 @@ export function AnalyticsTab({ analytics, onRefresh }: AnalyticsTabProps) {
 
             <button
               onClick={() => {
-                analyticsTracker.recordVisit();
+                analyticsTracker.recordVisit(true);
                 handleRefreshClick();
               }}
               className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 px-3 py-2 text-xs font-semibold transition-all"
